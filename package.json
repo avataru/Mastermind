@@ -9,7 +9,11 @@
     },
     "dependencies": {
         "discord.js": "^11.3.0",
+        "easy-table": "^1.1.1",
         "fs-nextra": "^0.3.2",
-        "lodash": "^4.17.5"
+        "lodash": "^4.17.5",
+        "moment-timezone": "^0.5.14",
+        "sqlite3": "^3.1.13",
+        "sqlite3-transactions": "0.0.5"
     }
 }

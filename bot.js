@@ -5,6 +5,12 @@ const config = require('./config.json');
 const client = new Discord.Client();
 const fs = require('fs');
 
+const sqlite3 = require('sqlite3').verbose();
+const TransactionDatabase = require("sqlite3-transactions").TransactionDatabase;
+let db = new TransactionDatabase(
+    new sqlite3.Database('./db/mastermind.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
+);
+
 client.on('ready', () => {
     console.log(`${config.name} has awakened and is logged in as ${client.user.username} (${client.user.id}).`);
     client.user.setActivity(`Hades' Star`);
@@ -12,6 +18,8 @@ client.on('ready', () => {
 
 client.config = config;
 client.commands = {};
+client.db = db;
+
 fs.readdir('./commands/', (error, files) => {
     if (error) {
         console.error(error);

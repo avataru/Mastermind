@@ -1,4 +1,4 @@
-var self = module.exports;
+const self = module.exports;
 
 exports.config = {
     enabled: true

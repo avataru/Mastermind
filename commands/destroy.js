@@ -1,4 +1,4 @@
-var self = module.exports;
+const self = module.exports;
 
 exports.config = {
     enabled: true
@@ -12,7 +12,7 @@ exports.help = {
 
 exports.run = (client, message, args) => {
     if (message.member.user.username === 'Paligan') {
-        message.channel.send(`You wish!`);
+        message.channel.send(`No, sorry, have some cake instead.`);
     } else {
         message.channel.send(`Done, ${args[0]} is gone! Are you happy?`);
     }

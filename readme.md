@@ -8,3 +8,17 @@ Examples:
 
 https://gist.github.com/eslachance/3349734a98d30011bb202f47342601d3
 https://github.com/eslachance/evie.selfbot
+
+Ideas:
+
+!reload [command]                   Clears the cache of a command and reloads it from file
+!restart                            Restarts the server
+
+!set tech [name](:level)
+!set tz [timezone]
+
+!list tech [name](:minimum level)
+!list tz
+
+!get tech [user]
+!get tz [user]

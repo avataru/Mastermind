@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const WS = require('../lib/ws').WS;
-
-var self = module.exports;
+const self = module.exports;
 
 exports.config = {
     enabled: true,

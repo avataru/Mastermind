@@ -1,6 +1,5 @@
 const _ = require('lodash');
-
-var self = module.exports;
+const self = module.exports;
 
 exports.config = {
     enabled: true
@@ -13,7 +12,7 @@ exports.help = {
 };
 
 exports.run = (client, message, args) => {
-    if (!args[0]) {
+    if (_.isEmpty(args[0])) {
         const commandNames = _.keys(client.commands);
         const longest = _.reduce(commandNames, (long, str) => Math.max(long, str.length), 0);
 
