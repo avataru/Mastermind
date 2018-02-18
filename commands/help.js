@@ -26,6 +26,7 @@ exports.run = (client, message, args) => {
     } else {
         let command = args[0];
         if (_.has(client.commands, command)) {
+            command = client.commands[command];
             message.channel.send(`= ${command.help.name} =\n\n${command.help.description}\nUsage: ${command.help.usage}`, {code:'asciidoc'});
         }
     }
