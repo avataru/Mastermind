@@ -35,7 +35,7 @@ exports.run = (client, message, args) => {
     const timezone = args[0] || '';
 
     if (_.isEmpty(args[0])) {
-        client.db.all(`SELECT username, timezone FROM timezones ORDER BY username`, [], (error, rows) => {
+        client.db.all(`SELECT username, timezone FROM timezones ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve thge timezones`, error.message);
             }
