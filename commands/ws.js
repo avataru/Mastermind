@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const WS = require('../lib/ws').WS;
+const WhiteStar = require('../lib/WhiteStar').WhiteStar;
 const self = module.exports;
 
 exports.config = {
@@ -35,7 +35,7 @@ exports.run = (client, message, args) => {
         return message.reply(`Please provide a valid number of participants (${_.join(formats, ', ')}).`);
     }
 
-    const ws = new WS(players, true);
+    const ws = new WhiteStar(players, true);
     ws.drawParticipants(numberOfParticipants);
     ws.makeTeams(numberOfTeams);
 

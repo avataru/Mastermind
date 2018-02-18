@@ -6,7 +6,7 @@ exports.config = {
 
 exports.help = {
     name: 'destroy',
-    description: 'Destroy stuff',
+    description: 'Destroy stuff (designed for Paligan)',
     usage: 'destroy [something]'
 };
 
