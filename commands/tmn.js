@@ -12,9 +12,9 @@ exports.config = {
 exports.help = {
     name: 'tmn',
     description: 'Manage player miner information',
-    usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n' + 
-    validation.invalidModuleError + '\n' +
-    validation.invalidMiningError
+    usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
+    validation.moduleHelp + '\n' +
+    validation.miningHelp
 };
 
 exports.init = (client) => {
@@ -74,32 +74,32 @@ exports.run = (client, message, args) => {
     const mining5 = args[5] || '';
     
     if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
+        message.channel.send(`Invalid module **${mod1}**. ${validation.moduleHelp}`);
         return;
     }
 
     if (mining1 !== '' && !validation.miningRegEx.test(mining1)) {
-        message.channel.send(`Invalid module **${mining1}**. ${validation.invalidMiningError}`);
+        message.channel.send(`Invalid module **${mining1}**. ${validation.miningHelp}`);
         return;
     }
 
     if (mining2 !== '' && !validation.miningRegEx.test(mining2)) {
-        message.channel.send(`Invalid module **${mining2}**. ${validation.invalidMiningError}`);
+        message.channel.send(`Invalid module **${mining2}**. ${validation.miningHelp}`);
         return;
     }
 
     if (mining3 !== '' && !validation.miningRegEx.test(mining3)) {
-        message.channel.send(`Invalid module **${mining3}**. ${validation.invalidMiningError}`);
+        message.channel.send(`Invalid module **${mining3}**. ${validation.miningHelp}`);
         return;
     }
 
     if (mining4 !== '' && !validation.miningRegEx.test(mining4)) {
-        message.channel.send(`Invalid module **${mining4}**. ${validation.invalidMiningError}`);
+        message.channel.send(`Invalid module **${mining4}**. ${validation.miningHelp}`);
         return;
     }
 
     if (mining5 !== '' && !validation.miningRegEx.test(mining5)) {
-        message.channel.send(`Invalid module **${mining5}**. ${validation.invalidMiningError}`);
+        message.channel.send(`Invalid module **${mining5}**. ${validation.miningHelp}`);
         return;
     }
 

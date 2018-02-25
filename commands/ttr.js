@@ -12,9 +12,9 @@ exports.config = {
 exports.help = {
     name: 'ttr',
     description: 'Manage player transport information',
-    usage: 'ttr [module] [trade] [trade] [trade] [trade] [trade]\n' + 
-    validation.invalidModuleError + '\n' +
-    validation.invalidTradeError
+    usage: 'ttr [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
+    validation.moduleHelp + '\n' +
+    validation.tradeHelp
 };
 
 exports.init = (client) => {
@@ -74,32 +74,32 @@ exports.run = (client, message, args) => {
     const trade5 = args[5] || '';
     
     if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
+        message.channel.send(`Invalid module **${mod1}**. ${validation.moduleHelp}`);
         return;
     }
 
     if (trade1 !== '' && !validation.tradeRegEx.test(trade1)) {
-        message.channel.send(`Invalid module **${trade1}**. ${validation.invalidTradeError}`);
+        message.channel.send(`Invalid module **${trade1}**. ${validation.tradeHelp}`);
         return;
     }
 
     if (trade2 !== '' && !validation.tradeRegEx.test(trade2)) {
-        message.channel.send(`Invalid module **${trade2}**. ${validation.invalidTradeError}`);
+        message.channel.send(`Invalid module **${trade2}**. ${validation.tradeHelp}`);
         return;
     }
 
     if (trade3 !== '' && !validation.tradeRegEx.test(trade3)) {
-        message.channel.send(`Invalid module **${trade3}**. ${validation.invalidTradeError}`);
+        message.channel.send(`Invalid module **${trade3}**. ${validation.tradeHelp}`);
         return;
     }
 
     if (trade4 !== '' && !validation.tradeRegEx.test(trade4)) {
-        message.channel.send(`Invalid module **${trade4}**. ${validation.invalidTradeError}`);
+        message.channel.send(`Invalid module **${trade4}**. ${validation.tradeHelp}`);
         return;
     }    
 
     if (trade5 !== '' && !validation.tradeRegEx.test(trade5)) {
-        message.channel.send(`Invalid module **${trade5}**. ${validation.invalidTradeError}`);
+        message.channel.send(`Invalid module **${trade5}**. ${validation.tradeHelp}`);
         return;
     }
 
