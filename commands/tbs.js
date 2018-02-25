@@ -71,32 +71,32 @@ exports.run = (client, message, args) => {
     const mod3 = args[4] || '';
     const mod4 = args[5] || '';
 
-    if (weapon === '' || validation.weaponRegEx.test(weapon)) {
+    if (weapon === '' || !validation.weaponRegEx.test(weapon)) {
         message.channel.send(`Invalid weapon **${weapon}**. ${validation.invalidWeaponError}`);
         return;
     }
 
-    if (shield === '' || validation.shieldRegEx.test(shield)) {
+    if (shield === '' || !validation.shieldRegEx.test(shield)) {
         message.channel.send(`Invalid shield **${shield}**. ${validation.invalidShieldError}`);
         return;
     }
     
-    if (mod1 !== '' || validation.moduleRegEx.test(mod1)) {
+    if (mod1 !== '' || !validation.moduleRegEx.test(mod1)) {
         message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod2 !== '' || validation.moduleRegEx.test(mod2)) {
+    if (mod2 !== '' || !validation.moduleRegEx.test(mod2)) {
         message.channel.send(`Invalid module **${mod2}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod3 !== '' || validation.moduleRegEx.test(mod3)) {
+    if (mod3 !== '' || !validation.moduleRegEx.test(mod3)) {
         message.channel.send(`Invalid module **${mod3}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod4 !== '' || validation.moduleRegEx.test(mod4)) {
+    if (mod4 !== '' || !validation.moduleRegEx.test(mod4)) {
         message.channel.send(`Invalid module **${mod4}**. ${validation.invalidModuleError}`);
         return;
     }
