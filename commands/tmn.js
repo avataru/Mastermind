@@ -12,7 +12,9 @@ exports.config = {
 exports.help = {
     name: 'tmn',
     description: 'Manage player miner information',
-    usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]'
+    usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n' + 
+    validation.invalidModuleError + '\n' +
+    validation.invalidMiningError
 };
 
 exports.init = (client) => {
@@ -71,32 +73,32 @@ exports.run = (client, message, args) => {
     const mining4 = args[4] || '';
     const mining5 = args[5] || '';
     
-    if (mod1 !== '' || !validation.moduleRegEx.test(mod1)) {
+    if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
         message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mining1 !== '' || !validation.miningRegEx.test(mining1)) {
+    if (mining1 !== '' && !validation.miningRegEx.test(mining1)) {
         message.channel.send(`Invalid module **${mining1}**. ${validation.invalidMiningError}`);
         return;
     }
 
-    if (mining2 !== '' || !validation.miningRegEx.test(mining2)) {
+    if (mining2 !== '' && !validation.miningRegEx.test(mining2)) {
         message.channel.send(`Invalid module **${mining2}**. ${validation.invalidMiningError}`);
         return;
     }
 
-    if (mining3 !== '' || !validation.miningRegEx.test(mining3)) {
+    if (mining3 !== '' && !validation.miningRegEx.test(mining3)) {
         message.channel.send(`Invalid module **${mining3}**. ${validation.invalidMiningError}`);
         return;
     }
 
-    if (mining4 !== '' || !validation.miningRegEx.test(mining4)) {
+    if (mining4 !== '' && !validation.miningRegEx.test(mining4)) {
         message.channel.send(`Invalid module **${mining4}**. ${validation.invalidMiningError}`);
         return;
     }
 
-    if (mining5 !== '' || !validation.miningRegEx.test(mining5)) {
+    if (mining5 !== '' && !validation.miningRegEx.test(mining5)) {
         message.channel.send(`Invalid module **${mining5}**. ${validation.invalidMiningError}`);
         return;
     }
