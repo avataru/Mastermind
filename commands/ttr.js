@@ -71,32 +71,32 @@ exports.run = (client, message, args) => {
     const trade4 = args[4] || '';
     const trade5 = args[5] || '';
     
-    if (mod1 !== '' || validation.moduleRegEx.test(mod1)) {
+    if (mod1 !== '' || !validation.moduleRegEx.test(mod1)) {
         message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (trade1 !== '' || validation.tradeRegEx.test(trade1)) {
+    if (trade1 !== '' || !validation.tradeRegEx.test(trade1)) {
         message.channel.send(`Invalid module **${trade1}**. ${validation.invalidTradeError}`);
         return;
     }
 
-    if (trade2 !== '' || validation.tradeRegEx.test(trade2)) {
+    if (trade2 !== '' || !validation.tradeRegEx.test(trade2)) {
         message.channel.send(`Invalid module **${trade2}**. ${validation.invalidTradeError}`);
         return;
     }
 
-    if (trade3 !== '' || validation.tradeRegEx.test(trade3)) {
+    if (trade3 !== '' || !validation.tradeRegEx.test(trade3)) {
         message.channel.send(`Invalid module **${trade3}**. ${validation.invalidTradeError}`);
         return;
     }
 
-    if (trade4 !== '' || validation.tradeRegEx.test(trade4)) {
+    if (trade4 !== '' || !validation.tradeRegEx.test(trade4)) {
         message.channel.send(`Invalid module **${trade4}**. ${validation.invalidTradeError}`);
         return;
     }    
 
-    if (trade5 !== '' || validation.tradeRegEx.test(trade5)) {
+    if (trade5 !== '' || !validation.tradeRegEx.test(trade5)) {
         message.channel.send(`Invalid module **${trade5}**. ${validation.invalidTradeError}`);
         return;
     }
