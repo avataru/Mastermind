@@ -12,10 +12,10 @@ exports.config = {
 exports.help = {
     name: 'tbs',
     description: 'Manage player battleship information',
-    usage: 'tbs [weapon] [shield] [module] [module] [module] [module]\n' + 
-        validation.invalidWeaponError + '\n' +
-        validation.invalidShieldError + '\n' +
-        validation.invalidModuleError
+    usage: 'tbs [weapon] [shield] [module] [module] [module] [module]\n\n' + 
+        validation.weaponHelp + '\n' +
+        validation.shieldHelp + '\n' +
+        validation.moduleHelp
 };
 
 exports.init = (client) => {
@@ -75,32 +75,32 @@ exports.run = (client, message, args) => {
     const mod4 = args[5] || '';
 
     if (weapon === '' || !validation.weaponRegEx.test(weapon)) {
-        message.channel.send(`Invalid weapon **${weapon}**. ${validation.invalidWeaponError}`);
+        message.channel.send(`Invalid weapon **${weapon}**. ${validation.weaponHelp}`);
         return;
     }
 
     if (shield === '' || !validation.shieldRegEx.test(shield)) {
-        message.channel.send(`Invalid shield **${shield}**. ${validation.invalidShieldError}`);
+        message.channel.send(`Invalid shield **${shield}**. ${validation.shieldHelp}`);
         return;
     }
     
     if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
+        message.channel.send(`Invalid module **${mod1}**. ${validation.moduleHelp}`);
         return;
     }
 
     if (mod2 !== '' && !validation.moduleRegEx.test(mod2)) {
-        message.channel.send(`Invalid module **${mod2}**. ${validation.invalidModuleError}`);
+        message.channel.send(`Invalid module **${mod2}**. ${validation.moduleHelp}`);
         return;
     }
 
     if (mod3 !== '' && !validation.moduleRegEx.test(mod3)) {
-        message.channel.send(`Invalid module **${mod3}**. ${validation.invalidModuleError}`);
+        message.channel.send(`Invalid module **${mod3}**. ${validation.moduleHelp}`);
         return;
     }
 
     if (mod4 !== '' && !validation.moduleRegEx.test(mod4)) {
-        message.channel.send(`Invalid module **${mod4}**. ${validation.invalidModuleError}`);
+        message.channel.send(`Invalid module **${mod4}**. ${validation.moduleHelp}`);
         return;
     }
 
