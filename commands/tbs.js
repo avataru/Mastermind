@@ -12,7 +12,10 @@ exports.config = {
 exports.help = {
     name: 'tbs',
     description: 'Manage player battleship information',
-    usage: 'tbs [weapon] [shield] [module] [module] [module] [module]'
+    usage: 'tbs [weapon] [shield] [module] [module] [module] [module]\n' + 
+        validation.invalidWeaponError + '\n' +
+        validation.invalidShieldError + '\n' +
+        validation.invalidModuleError
 };
 
 exports.init = (client) => {
@@ -81,22 +84,22 @@ exports.run = (client, message, args) => {
         return;
     }
     
-    if (mod1 !== '' || !validation.moduleRegEx.test(mod1)) {
+    if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
         message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod2 !== '' || !validation.moduleRegEx.test(mod2)) {
+    if (mod2 !== '' && !validation.moduleRegEx.test(mod2)) {
         message.channel.send(`Invalid module **${mod2}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod3 !== '' || !validation.moduleRegEx.test(mod3)) {
+    if (mod3 !== '' && !validation.moduleRegEx.test(mod3)) {
         message.channel.send(`Invalid module **${mod3}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod4 !== '' || !validation.moduleRegEx.test(mod4)) {
+    if (mod4 !== '' && !validation.moduleRegEx.test(mod4)) {
         message.channel.send(`Invalid module **${mod4}**. ${validation.invalidModuleError}`);
         return;
     }
