@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Table = require('easy-table');
+const validation = require('../lib/validation');
 const self = module.exports;
 
 exports.config = {
@@ -70,36 +71,33 @@ exports.run = (client, message, args) => {
     const mod3 = args[4] || '';
     const mod4 = args[5] || '';
 
-    if (weapon === '' || /^(Bat[1-9])|(Lzr[1-9])|(MBat[1-9])|(DLzr[1-9])|(Brg[1-9])$/.test(weapon)) {
-        message.channel.send(`Invalid weapon **${weapon}**. Valid entries are Bat, Lzr, MBat, DLzr, Brg followed by a level number. e.g. Bat3`);
+    if (weapon === '' || validation.weaponRegEx.test(weapon)) {
+        message.channel.send(`Invalid weapon **${weapon}**. ${validation.invalidWeaponError}`);
         return;
     }
 
-    if (shield === '' || /^(Dlt[1-9])|(Psv[1-9])|(Omg[1-9])|(Mrr[1-9])|(Are[1-9])$/.test(shield)) {
-        message.channel.send(`Invalid shield **${shield}**. Valid entries are Dlt, Psv, Omg, Mrr, Are followed by a level number. e.g. Omg3`);
+    if (shield === '' || validation.shieldRegEx.test(shield)) {
+        message.channel.send(`Invalid shield **${shield}**. ${validation.invalidShieldError}`);
+        return;
+    }
+    
+    if (mod1 !== '' || validation.moduleRegEx.test(mod1)) {
+        message.channel.send(`Invalid module **${mod1}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    const validate_module = /^(Emp[1-9])|(Tp[1-9])|(Rep[1-9])|(TWrp[1-9])|(Uni[1-9])|(Sanc)|(Stl[1-9])|(For[1-9])|(Imp[1-9])|(Rkt[1-9])|(Sal[1-9])|(Sup[1-9])|(Dst[1-9])|(Brr[1-9])|(Vng[1-9])|(Lep[1-9])$/;
-    const invalid_module_error = 'Valid entries are Emp, Tp, Rep, TWrp, Uni, Sanc, Stl, For, Imp, Rkt, Sal, Sup, Dst, Brr, Vng, Lep followed by a level number. e.g. TWrp3';
-
-    if (mod1 !== '' || validate_module.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**. ` + invalid_module_error);
+    if (mod2 !== '' || validation.moduleRegEx.test(mod2)) {
+        message.channel.send(`Invalid module **${mod2}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod2 !== '' || validate_module.test(mod2)) {
-        message.channel.send(`Invalid module **${mod2}**. ` + invalid_module_error);
+    if (mod3 !== '' || validation.moduleRegEx.test(mod3)) {
+        message.channel.send(`Invalid module **${mod3}**. ${validation.invalidModuleError}`);
         return;
     }
 
-    if (mod3 !== '' || validate_module.test(mod3)) {
-        message.channel.send(`Invalid module **${mod3}**. ` + invalid_module_error);
-        return;
-    }
-
-    if (mod4 !== '' || validate_module.test(mod4)) {
-        message.channel.send(`Invalid module **${mod4}**. ` + invalid_module_error);
+    if (mod4 !== '' || validation.moduleRegEx.test(mod4)) {
+        message.channel.send(`Invalid module **${mod4}**. ${validation.invalidModuleError}`);
         return;
     }
 
