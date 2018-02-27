@@ -75,7 +75,7 @@ exports.run = (client, message, args) => {
 
     client.db.run(`REPLACE INTO timezones (userId, username, timezone) VALUES (?, ?, ?)`, [userId, username, timezone], function(error) {
         if (error) {
-            return console.log(`Unable to save timezone "${timezone}"" for user ${username} (${userId})`, error.message);
+            return console.log(`Unable to save timezone "${timezone}" for user ${username} (${userId})`, error.message);
         }
     });
 
