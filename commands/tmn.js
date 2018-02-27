@@ -13,8 +13,8 @@ exports.help = {
     name: 'tmn',
     description: 'Manage player miner information',
     usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
-    validation.moduleHelp + '\n' +
-    validation.miningHelp
+        validation.moduleHelp + '\n' +
+        validation.miningHelp
 };
 
 exports.init = (client) => {

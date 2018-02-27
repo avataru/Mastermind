@@ -13,8 +13,8 @@ exports.help = {
     name: 'ttr',
     description: 'Manage player transport information',
     usage: 'ttr [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
-    validation.moduleHelp + '\n' +
-    validation.tradeHelp
+        validation.moduleHelp + '\n' +
+        validation.tradeHelp
 };
 
 exports.init = (client) => {
