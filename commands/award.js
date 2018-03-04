@@ -37,8 +37,12 @@ exports.run = (client, message, args) => {
         var targetDB = client.users.get(targetID)
     
         if (!targetDB) {
-            return message.channel.send('Who?! Never heard of them.');
-        }      
+            return message.channel.send('Who?! Never heard of them...');
+        }
+
+        if (targetDB.id === message.member.user.id) {
+            return message.channel.send("Hey! You can't award yourself.");
+        }
 
         var name = targetDB.nickname || targetDB.username;
         
