@@ -32,7 +32,7 @@ exports.run = (client, message, args) => {
             return message.channel.send('I dont know that achievement, try one of these...\n\n' + lib.getAchievementsText());
         }
 
-        var targetID = args[0].replace("<@","").replace(">","");
+        var targetID = args[0].replace("<@","").replace(">","").replace("!", "");
         var targetDB = client.users.get(targetID)
     
         if (!targetDB) {
