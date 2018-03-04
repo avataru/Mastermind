@@ -25,7 +25,7 @@ exports.run = (client, message, args) => {
         if (!lib.validatePlayerArg(client, message, args, HELP_TEXT))
             return;
 
-        var targetID = args[0].replace("<@","").replace(">","");
+        var targetID = args[0].replace("<@","").replace(">","").replace("!", "");
         var targetDB = client.users.get(targetID)
     
         if (!targetDB) {
