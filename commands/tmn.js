@@ -13,8 +13,9 @@ exports.help = {
     name: 'tmn',
     description: 'Manage player miner information',
     usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
-    validation.moduleHelp + '\n' +
-    validation.miningHelp
+        validation.moduleHelp + '\n' +
+        validation.miningHelp + '\n\n' + 
+        'Example: !tmn twrp3 rmt4 crch1'
 };
 
 exports.init = (client) => {
@@ -74,32 +75,32 @@ exports.run = (client, message, args) => {
     const mining5 = args[5] || '';
     
     if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**. ${validation.moduleHelp}`);
+        message.channel.send(`Invalid module **${mod1}**\n${validation.moduleHelp}`);
         return;
     }
 
     if (mining1 !== '' && !validation.miningRegEx.test(mining1)) {
-        message.channel.send(`Invalid module **${mining1}**. ${validation.miningHelp}`);
+        message.channel.send(`Invalid module **${mining1}**\n${validation.miningHelp}`);
         return;
     }
 
     if (mining2 !== '' && !validation.miningRegEx.test(mining2)) {
-        message.channel.send(`Invalid module **${mining2}**. ${validation.miningHelp}`);
+        message.channel.send(`Invalid module **${mining2}**\n${validation.miningHelp}`);
         return;
     }
 
     if (mining3 !== '' && !validation.miningRegEx.test(mining3)) {
-        message.channel.send(`Invalid module **${mining3}**. ${validation.miningHelp}`);
+        message.channel.send(`Invalid module **${mining3}**\n${validation.miningHelp}`);
         return;
     }
 
     if (mining4 !== '' && !validation.miningRegEx.test(mining4)) {
-        message.channel.send(`Invalid module **${mining4}**. ${validation.miningHelp}`);
+        message.channel.send(`Invalid module **${mining4}**\n${validation.miningHelp}`);
         return;
     }
 
     if (mining5 !== '' && !validation.miningRegEx.test(mining5)) {
-        message.channel.send(`Invalid module **${mining5}**. ${validation.miningHelp}`);
+        message.channel.send(`Invalid module **${mining5}**\n${validation.miningHelp}`);
         return;
     }
 

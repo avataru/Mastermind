@@ -15,7 +15,8 @@ exports.help = {
     usage: 'tbs [weapon] [shield] [module] [module] [module] [module]\n\n' + 
         validation.weaponHelp + '\n' +
         validation.shieldHelp + '\n' +
-        validation.moduleHelp
+        validation.moduleHelp + '\n\n' + 
+        'Example: !tbs dlzr6 omg1 dst2 tlp5 sanc'
 };
 
 exports.init = (client) => {
@@ -75,32 +76,32 @@ exports.run = (client, message, args) => {
     const mod4 = args[5] || '';
 
     if (weapon === '' || !validation.weaponRegEx.test(weapon)) {
-        message.channel.send(`Invalid weapon **${weapon}**. ${validation.weaponHelp}`);
+        message.channel.send(`Invalid weapon **${weapon}**\n${validation.weaponHelp}`);
         return;
     }
 
     if (shield === '' || !validation.shieldRegEx.test(shield)) {
-        message.channel.send(`Invalid shield **${shield}**. ${validation.shieldHelp}`);
+        message.channel.send(`Invalid shield **${shield}**\n${validation.shieldHelp}`);
         return;
     }
     
     if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**. ${validation.moduleHelp}`);
+        message.channel.send(`Invalid module **${mod1}**\n${validation.moduleHelp}`);
         return;
     }
 
     if (mod2 !== '' && !validation.moduleRegEx.test(mod2)) {
-        message.channel.send(`Invalid module **${mod2}**. ${validation.moduleHelp}`);
+        message.channel.send(`Invalid module **${mod2}**\n${validation.moduleHelp}`);
         return;
     }
 
     if (mod3 !== '' && !validation.moduleRegEx.test(mod3)) {
-        message.channel.send(`Invalid module **${mod3}**. ${validation.moduleHelp}`);
+        message.channel.send(`Invalid module **${mod3}**\n${validation.moduleHelp}`);
         return;
     }
 
     if (mod4 !== '' && !validation.moduleRegEx.test(mod4)) {
-        message.channel.send(`Invalid module **${mod4}**. ${validation.moduleHelp}`);
+        message.channel.send(`Invalid module **${mod4}**\n${validation.moduleHelp}`);
         return;
     }
 
