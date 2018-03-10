@@ -3,8 +3,7 @@ const WhiteStar = require('../lib/WhiteStar').WhiteStar;
 const self = module.exports;
 
 exports.config = {
-    enabled: true,
-    roles: ['First Officer', 'Officer'],
+    enabledRoles: ['First Officer', 'Officer'],
     playerRole: 'WhiteStar Player',
     availableFormats: [5, 10, 15, 20],
     accent: 0xFFD700

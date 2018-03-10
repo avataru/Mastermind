@@ -1,7 +1,6 @@
 const self = module.exports;
 
 exports.config = {
-    enabled: true
 };
 
 exports.help = {

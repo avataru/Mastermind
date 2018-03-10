@@ -5,8 +5,6 @@ const self = module.exports;
 const HELP_TEXT = '!achievements [@player]'
 
 exports.config = {
-    enabled: true,
-    accent: 0xFFD700
 };
 
 exports.help = {

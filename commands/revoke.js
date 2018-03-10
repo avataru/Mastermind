@@ -5,9 +5,7 @@ const self = module.exports;
 const HELP_TEXT = '!revoke @player achievement'
 
 exports.config = {
-    enabled: true,
-    setOther: ['First Officer', 'Officer', 'Devs'],
-    accent: 0xFFD700
+    enabledRoles: ['First Officer', 'Officer', 'Devs']
 };
 
 exports.help = {
@@ -19,7 +17,6 @@ exports.help = {
 exports.init = (client) => {
     lib.initDb(client.db);
 };
-
 
 exports.run = (client, message, args) => {
     
@@ -41,14 +38,9 @@ exports.run = (client, message, args) => {
             return message.channel.send('Who?! Never heard of them.');
         }  
 
-        const allowedRoles = self.config.setOther;
-        if (_.isEmpty(allowedRoles) || message.member.roles.some(role => allowedRoles.includes(role.name))) {
-            lib.removeAchievement(client.db, targetDB.id, achievement.id);
+        lib.removeAchievement(client.db, targetDB.id, achievement.id);
 
-            return message.channel.send(`Achievment revoked :(`); 
-        } else {
-            return message.channel.send(`Sorry, this is for the big bosses only!`); 
-        }      
+        return message.react(`👌`);
     } else {
         message.channel.send('Nope, try again.\n' + HELP_TEXT + '\n\n' + lib.getAchievementsText());
     }

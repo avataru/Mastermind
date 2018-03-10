@@ -5,6 +5,8 @@ const config = require('./config.json');
 const client = new Discord.Client();
 const fs = require('fs');
 
+const mcLib = require('./lib/mc_library');
+
 const sqlite3 = require('sqlite3').verbose();
 const TransactionDatabase = require("sqlite3-transactions").TransactionDatabase;
 let db = new TransactionDatabase(
@@ -24,6 +26,7 @@ fs.readdir('./commands/', (error, files) => {
     if (error) {
         console.error(error);
     }
+    
     console.log(`Loading a total of ${files.length} commands.`);
 
     files.forEach(file => {
@@ -52,16 +55,21 @@ client.on('message', async message => {
     const command = args.shift().slice(config.prefix.length).toLowerCase();
 
     if (_.has(client.commands, command)) {
-        if (client.commands[command].config.enabled !== true) {
-            return message.reply(`Sorry, this command is disabled!`);
-        }
 
-        const allowedRoles = client.commands[command].config.roles;
+        const allowedRoles = client.commands[command].config.enabledRoles;
         if (!_.isEmpty(allowedRoles) && !message.member.roles.some(role => allowedRoles.includes(role.name))) {
-            return message.reply(`Sorry, you don't have permissions to use this!`);
+            return message.react(`🚫`);
         }
 
-        client.commands[command].run(client, message, args);
+        mcLib.getDisabledCommands(client.db, message.channel.name, (commands) => {
+            if (commands && commands.includes(command)) {
+                return message.react(`🔇`);
+            } else {
+                client.commands[command].run(client, message, args);
+            }
+        });        
+    } else {
+        return message.react(`❔`);
     }
 });
 

@@ -15,7 +15,6 @@ var buildMessage = function(timestamp) {
 }
 
 exports.config = {
-    enabled: true
 };
   
 exports.help = {
@@ -35,52 +34,12 @@ exports.init = (client) => {
           messaged TEXT NOT NULL
       );`);
       transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON last_seen (username);`);
-      /* table creation for storing last init timestamp
-      transaction.run(`CREATE TABLE IF NOT EXISTS last_seen_init (
-        id TEXT NOT NULL PRIMARY KEY,
-        timestamp TEXT NOT NULL
-      );`);
-      transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_id ON last_seen_init (id);`);
-      */
       transaction.commit(error => {
           if (error) {
               return console.log(`Unable to create the last_seen table`, error.message);
           }
       });
   });
-
-  /*
-  var lastSeenOffset = 0;
-
-  client.db.all(`SELECT timestamp FROM last_seen_init COLLATE NOCASE ASC`, [], (error, rows) => {
-    if (error) {
-        return console.log(`Unable to retrieve the last init timestamp`, error.message);
-    }
-
-    // work out the time difference between when init last ran and now
-    lastSeenOffset = Date.now() - row.timestamp
-  });
-
-  if (lastSeenOffset) {
-    // update all entries timestamps with the "gap" since the last init was
-    client.db.all(`SELECT userId, username, timestamp, messaged FROM last_seen ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
-      if (error) {
-          return console.log(`Unable to retrieve last seen data.`, error.message);
-      }
-
-      var newTimestamp = row.timestamp + lastSeenOffset;
-
-      updateEntry(db, row.userId, row.username, newTimestamp, buildMessage(newTimestamp))      
-    });
-  }
-
-  // update the init timestamp for next time
-  client.db.run(`REPLACE INTO last_seen_init (id, timestamp) VALUES (?, ?)`, ['last', Date.now()], function(error) {
-    if (error) {
-        return console.log(`Unable to save last_seen_init timestamp`, error.message);
-    }
-  });  
-  */
 };
 
 exports.run = (client, message, args) => { 

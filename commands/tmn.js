@@ -1,20 +1,36 @@
 const _ = require('lodash');
 const Table = require('easy-table');
-const validation = require('../lib/validation');
+const lib = require('../lib/tech_library');
 const self = module.exports;
 
-exports.config = {
-    enabled: true,
-    setOther: ['First Officer', 'Officer'],
-    accent: 0xFFD700
+let addHeadingRow = function(table, heading) {
+    table.cell('Player', heading);
+    table.cell('Module', '');
+    table.cell('Mining', '');         
+    table.newRow();
+} 
+
+let addPlayerRow = function(table, row) {
+    table.cell('Player', row.username);
+    table.cell('Module', row.module);
+    table.cell('Mining', 
+        (row.mining1 === '' ? '' : row.mining1) + 
+        (row.mining2 === '' ? '' : ', ' + row.mining2) + 
+        (row.mining3 === '' ? '' : ', ' + row.mining3) + 
+        (row.mining4 === '' ? '' : ', ' + row.mining4) + 
+        (row.mining5 === '' ? '' : ', ' + row.mining5));                
+    table.newRow();
+}
+
+exports.config = {    
 };
 
 exports.help = {
     name: 'tmn',
     description: 'Manage player miner information',
     usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
-        validation.moduleHelp + '\n' +
-        validation.miningHelp + '\n\n' + 
+        lib.moduleHelp + '\n' +
+        lib.miningHelp + '\n\n' + 
         'Example: !tmn twrp3 rmt4 crch1'
 };
 
@@ -43,25 +59,50 @@ exports.run = (client, message, args) => {
     
     // display
     if (args === null || args.length === 0) {
-        client.db.all(`SELECT username, module, mining1, mining2, mining3, mining4, mining5 FROM mn_tech ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+        client.db.all(`SELECT userId, username, module, mining1, mining2, mining3, mining4, mining5 FROM mn_tech ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the miner tech`, error.message);
             }
 
             let table = new Table;
-            _.map(rows, row => {
-                table.cell('Player', row.username);
-                table.cell('Module', row.module);
-                table.cell('Mining', 
-                    (row.mining1 === '' ? '' : row.mining1) + 
-                    (row.mining2 === '' ? '' : ', ' + row.mining2) + 
-                    (row.mining3 === '' ? '' : ', ' + row.mining3) + 
-                    (row.mining4 === '' ? '' : ', ' + row.mining4) + 
-                    (row.mining5 === '' ? '' : ', ' + row.mining5));                
-                table.newRow();
+            let teamARows = [], teamBRows = [], teamCRows = [], noTeamRows = [];
+
+            _.map(rows, row => {                
+                if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team A')) {
+                    teamARows.push(row)
+                } else if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team B')) {
+                    teamBRows.push(row)
+                } else if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team C')) {
+                    teamCRows.push(row)
+                } else {
+                    noTeamRows.push(row)
+                }
             });
 
-            message.channel.send(`= Player miner tech =\n\n${table.toString()}`, {code:'asciidoc'});
+            if (teamARows.length) {
+                addHeadingRow(table, '*Team A*')
+                teamARows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            if (teamBRows.length) {
+                addHeadingRow(table, '*Team B*')
+                teamBRows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            if (teamCRows.length) {
+                addHeadingRow(table, '*Team C*')
+                teamCRows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            if (noTeamRows.length) {
+                if (teamARows.length || teamBRows.length || teamCRows.length) {
+                    addHeadingRow(table, '*Other*')
+                }
+                
+                noTeamRows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            message.channel.send(`= Player Miner Tech =\n\n${table.toString()}`, {code:'asciidoc'});
         });
 
         return;
@@ -74,48 +115,38 @@ exports.run = (client, message, args) => {
     const mining4 = args[4] || '';
     const mining5 = args[5] || '';
     
-    if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**\n${validation.moduleHelp}`);
+    if (mod1 !== '' && !lib.moduleRegEx.test(mod1)) {
+        message.channel.send(`Invalid module **${mod1}**\n${lib.moduleHelp}`);
         return;
     }
 
-    if (mining1 !== '' && !validation.miningRegEx.test(mining1)) {
-        message.channel.send(`Invalid module **${mining1}**\n${validation.miningHelp}`);
+    if (mining1 !== '' && !lib.miningRegEx.test(mining1)) {
+        message.channel.send(`Invalid module **${mining1}**\n${lib.miningHelp}`);
         return;
     }
 
-    if (mining2 !== '' && !validation.miningRegEx.test(mining2)) {
-        message.channel.send(`Invalid module **${mining2}**\n${validation.miningHelp}`);
+    if (mining2 !== '' && !lib.miningRegEx.test(mining2)) {
+        message.channel.send(`Invalid module **${mining2}**\n${lib.miningHelp}`);
         return;
     }
 
-    if (mining3 !== '' && !validation.miningRegEx.test(mining3)) {
-        message.channel.send(`Invalid module **${mining3}**\n${validation.miningHelp}`);
+    if (mining3 !== '' && !lib.miningRegEx.test(mining3)) {
+        message.channel.send(`Invalid module **${mining3}**\n${lib.miningHelp}`);
         return;
     }
 
-    if (mining4 !== '' && !validation.miningRegEx.test(mining4)) {
-        message.channel.send(`Invalid module **${mining4}**\n${validation.miningHelp}`);
+    if (mining4 !== '' && !lib.miningRegEx.test(mining4)) {
+        message.channel.send(`Invalid module **${mining4}**\n${lib.miningHelp}`);
         return;
     }
 
-    if (mining5 !== '' && !validation.miningRegEx.test(mining5)) {
-        message.channel.send(`Invalid module **${mining5}**\n${validation.miningHelp}`);
+    if (mining5 !== '' && !lib.miningRegEx.test(mining5)) {
+        message.channel.send(`Invalid module **${mining5}**\n${lib.miningHelp}`);
         return;
     }
-
-    const allowedRoles = self.config.setOther;
+    
     let userId = message.member.user.id;
     let username = message.member.nickname || message.member.user.username;
-    let target;
-
-    if (_.isEmpty(allowedRoles) || message.member.roles.some(role => allowedRoles.includes(role.name))) {
-        target = message.mentions.members.first();
-        if (!_.isEmpty(target)) {
-            userId = target.user.id;
-            username = target.user.nickname || target.user.username;
-        }
-    }
 
     client.db.run(`REPLACE INTO mn_tech (userId, username, module, mining1, mining2, mining3, mining4, mining5) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, mod1, mining1, mining2, mining3, mining4, mining5], function(error) {
         if (error) {
@@ -123,9 +154,5 @@ exports.run = (client, message, args) => {
         }
     });
 
-    if (!_.isEmpty(target)) {
-        message.channel.send(`The miner tech for ${target.user} was updated.`);
-    } else {
-        message.channel.send(`Your miner tech was updated.`);
-    }
+    message.react(`👌`);
 };

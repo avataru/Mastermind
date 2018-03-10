@@ -5,14 +5,13 @@ const HELP_TEXT = '!nominate @player achievement'
 const MIN_NOMINATIONS = 3;
 
 exports.config = {
-    enabled: true,
-    accent: 0xFFD700
 };
 
 exports.help = {
     name: 'nominate',
     description: "Nominates a player for an achievement.",
-    usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
+    usage: HELP_TEXT + '\n\n' + 
+        "Use !achievements to see a list of valid achievents. It takes " + MIN_NOMINATIONS + " nominations to get an achievement."
 };
 
 exports.init = (client) => {
@@ -53,7 +52,7 @@ exports.run = (client, message, args) => {
 
                 return message.channel.send(`${MIN_NOMINATIONS} reached. Achievent awarded!`);                
             } else {
-                return message.channel.send(`Nomination recorded!`);
+                return message.react(`👌`);
             }  
         });           
     } else {

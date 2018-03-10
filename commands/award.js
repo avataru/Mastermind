@@ -5,9 +5,7 @@ const self = module.exports;
 const HELP_TEXT = '!award @player achievement'
 
 exports.config = {
-    enabled: true,
-    setOther: ['First Officer', 'Officer', 'Devs'],
-    accent: 0xFFD700
+    enabledRoles: ['First Officer', 'Officer', 'Devs']
 };
 
 exports.help = {
@@ -46,14 +44,9 @@ exports.run = (client, message, args) => {
 
         var name = targetDB.nickname || targetDB.username;
         
-        const allowedRoles = self.config.setOther;
-        if (_.isEmpty(allowedRoles) || message.member.roles.some(role => allowedRoles.includes(role.name))) {
-            lib.addAchievement(client.db, targetDB.id, name, achievement.id);
+        lib.addAchievement(client.db, targetDB.id, name, achievement.id);
 
-            return message.channel.send(`Achievment awarded!`); 
-        } else {
-            return message.channel.send(`Sorry, this is for the big bosses only! But you can nominate a player for an award instead.`); 
-        }      
+        return message.react(`👌`);
     } else {
         message.channel.send('Nope, try again.\n' + HELP_TEXT + '\n\n' + lib.getAchievementsText());
     }

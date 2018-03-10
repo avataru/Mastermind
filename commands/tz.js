@@ -4,9 +4,7 @@ const Table = require('easy-table');
 const self = module.exports;
 
 exports.config = {
-    enabled: true,
-    setOther: ['First Officer', 'Officer'],
-    accent: 0xFFD700
+    setOther: ['First Officer', 'Officer', 'Devs']
 };
 
 exports.help = {
