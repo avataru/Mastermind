@@ -29,7 +29,8 @@ exports.config = {
 
 exports.help = {
     name: 'ttr',
-    description: 'Manage player transport information',
+    category: 'White Star',
+    description: 'Manage player transport information.',
     usage: 'ttr [hold] [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
         lib.moduleHelp + '\n' +
         lib.tradeHelp + '\n\n' + 

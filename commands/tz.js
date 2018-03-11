@@ -9,7 +9,8 @@ exports.config = {
 
 exports.help = {
     name: 'tz',
-    description: 'Manage player timezone information',
+    category: 'White Star',
+    description: 'Manage player timezone information.',
     usage: 'tz [timezone]'
 };
 

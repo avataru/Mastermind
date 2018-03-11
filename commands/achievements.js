@@ -9,7 +9,8 @@ exports.config = {
 
 exports.help = {
     name: 'achievements',
-    description: "Display a player's achievements.",
+    category: 'White Star',
+    description: "Display all available achievements, or a player's achievements.",
     usage: HELP_TEXT
 };
 

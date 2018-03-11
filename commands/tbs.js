@@ -28,7 +28,8 @@ exports.config = {
 
 exports.help = {
     name: 'tbs',
-    description: 'Manage player battleship information',
+    category: 'White Star',
+    description: 'Manage player battleship information.',
     usage: 'tbs [weapon] [shield] [module] [module] [module] [module]\n\n' + 
         lib.weaponHelp + '\n' +
         lib.shieldHelp + '\n' +

@@ -10,6 +10,7 @@ exports.config = {
 
 exports.help = {
     name: 'revoke',
+    category: 'White Star',
     description: "Revokes a player's achievement.",
     usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
 };

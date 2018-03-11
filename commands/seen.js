@@ -19,6 +19,7 @@ exports.config = {
   
 exports.help = {
     name: "seen",
+    category: 'Misc',
     description: "When was the last time a player messaged?",
     usage: "seen [@user]."
 };

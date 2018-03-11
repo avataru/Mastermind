@@ -27,7 +27,8 @@ exports.config = {
 
 exports.help = {
     name: 'tmn',
-    description: 'Manage player miner information',
+    category: 'White Star',
+    description: 'Manage player miner information.',
     usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
         lib.moduleHelp + '\n' +
         lib.miningHelp + '\n\n' + 

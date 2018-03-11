@@ -5,6 +5,7 @@ exports.config = {
 
 exports.help = {
     name: 'ping',
+    category: 'Misc',
     description: 'Play ping-pong on server time.',
     usage: 'ping'
 };

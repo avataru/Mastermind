@@ -7,7 +7,8 @@ exports.config = {
 };
 
 exports.help = {
-    name: 'mc',
+    name: 'mc',    
+    category: 'Administration',
     description: 'Adds or removes the ability to use a command in a channel.',
     usage: 'mc [+-][command name]'
 };
