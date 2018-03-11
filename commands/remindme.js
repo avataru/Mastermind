@@ -7,7 +7,7 @@ exports.config = {
 
 exports.help = {
     name: 'remindme',
-    category: 'Misc',
+    category: 'White Star',
     description: 'Reminds you of something at some point.',
     usage: 'remindme [time] to [something]'
 };

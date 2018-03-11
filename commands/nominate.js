@@ -9,7 +9,7 @@ exports.config = {
 
 exports.help = {
     name: 'nominate',
-    category: 'White Star',
+    category: 'Achievements',
     description: "Nominates a player for an achievement.",
     usage: HELP_TEXT + '\n\n' + 
         "Use !achievements to see a list of valid achievents. It takes " + MIN_NOMINATIONS + " nominations to get an achievement."

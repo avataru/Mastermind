@@ -10,7 +10,7 @@ exports.config = {
 
 exports.help = {
     name: 'award',
-    category: 'White Star',
+    category: 'Achievements',
     description: 'Awards a player with an achievement.',
     usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
 };
