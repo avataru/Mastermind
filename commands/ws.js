@@ -10,10 +10,10 @@ exports.config = {
 };
 
 exports.help = {
-    name: 'ws',
+    name: 'xws',
     category: 'White Star',
     description: 'Draws the next White Star participants and set-up their roles.',
-    usage: 'ws [number of players] [number of teams (optional)]'
+    usage: 'xws [number of players] [number of teams (optional)]'
 };
 
 exports.run = (client, message, args) => {
