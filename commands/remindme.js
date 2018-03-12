@@ -3,11 +3,11 @@ var moment = require('moment')
 const self = module.exports;
 
 exports.config = {
-    enabled: true
 };
 
 exports.help = {
     name: 'remindme',
+    category: 'White Star',
     description: 'Reminds you of something at some point.',
     usage: 'remindme [time] to [something]'
 };
@@ -18,12 +18,14 @@ exports.run = (client, message, args) => {
     const time = chrono.parseDate(args[0]);
 
     const reminder = args[1]
+        .replace(/\s+me\s+/gi, ' you ')
+        .replace(/\s+my\s+/gi, ' your ')
         .replace(/\s+i am\s+/gi, ' you are ')
         .replace(/\s+i\s+/gi, ' you ');
 
     const delay = moment(time).valueOf() - moment().valueOf();
 
-    message.reply(`Ok, I will remind you.`);
+    message.react(`👌`);
 
     setTimeout((reminder) => { message.reply(`It's time to ${reminder}`); }, delay, reminder);
 };

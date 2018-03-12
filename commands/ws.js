@@ -3,8 +3,7 @@ const WhiteStar = require('../lib/WhiteStar').WhiteStar;
 const self = module.exports;
 
 exports.config = {
-    enabled: true,
-    roles: ['First Officer', 'Officer'],
+    enabledRoles: ['First Officer', 'Officer', 'Devs'],
     playerRole: 'WhiteStar Player',
     availableFormats: [5, 10, 15, 20],
     accent: 0xFFD700
@@ -12,6 +11,7 @@ exports.config = {
 
 exports.help = {
     name: 'ws',
+    category: 'White Star',
     description: 'Draws the next White Star participants and set-up their roles.',
     usage: 'ws [number of players] [number of teams (optional)]'
 };

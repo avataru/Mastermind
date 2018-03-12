@@ -1,11 +1,11 @@
 const self = module.exports;
 
 exports.config = {
-    enabled: true
 };
 
 exports.help = {
     name: 'ping',
+    category: 'Misc',
     description: 'Play ping-pong on server time.',
     usage: 'ping'
 };

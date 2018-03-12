@@ -1,20 +1,39 @@
 const _ = require('lodash');
 const Table = require('easy-table');
-const validation = require('../lib/validation');
+const lib = require('../lib/tech_library');
 const self = module.exports;
 
-exports.config = {
-    enabled: true,
-    setOther: ['First Officer', 'Officer'],
-    accent: 0xFFD700
+let addHeadingRow = function(table, heading) {
+    table.cell('Player', heading);
+    table.cell('Hold', '');
+    table.cell('Module', '');
+    table.cell('Trade', '');
+    table.newRow();
+} 
+
+let addPlayerRow = function(table, row) {
+    table.cell('Player', row.username);
+    table.cell('Hold', row.hold);
+    table.cell('Module', row.module);
+    table.cell('Trade', 
+        (row.trade1 === '' ? '' : row.trade1) + 
+        (row.trade2 === '' ? '' : ', ' + row.trade2) + 
+        (row.trade3 === '' ? '' : ', ' + row.trade3) + 
+        (row.trade4 === '' ? '' : ', ' + row.trade4) + 
+        (row.trade5 === '' ? '' : ', ' + row.trade5));                
+    table.newRow();
+}
+
+exports.config = {    
 };
 
 exports.help = {
     name: 'ttr',
-    description: 'Manage player transport information',
+    category: 'White Star',
+    description: 'Manage player transport information.',
     usage: 'ttr [hold] [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
-        validation.moduleHelp + '\n' +
-        validation.tradeHelp + '\n\n' + 
+        lib.moduleHelp + '\n' +
+        lib.tradeHelp + '\n\n' + 
         'Example: !ttr 10 twrp3 cbe5 scmp3 trbo3'
 };
 
@@ -44,26 +63,50 @@ exports.run = (client, message, args) => {
     
     // display
     if (args === null || args.length === 0) {
-        client.db.all(`SELECT username, hold, module, trade1, trade2, trade3, trade4, trade5 FROM tr_tech2 ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+        client.db.all(`SELECT userId, username, hold, module, trade1, trade2, trade3, trade4, trade5 FROM tr_tech2 ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the transport tech`, error.message);
             }
 
             let table = new Table;
-            _.map(rows, row => {
-                table.cell('Player', row.username);
-                table.cell('Hold', row.hold);
-                table.cell('Module', row.module);
-                table.cell('Trade', 
-                    (row.trade1 === '' ? '' : row.trade1) + 
-                    (row.trade2 === '' ? '' : ', ' + row.trade2) + 
-                    (row.trade3 === '' ? '' : ', ' + row.trade3) + 
-                    (row.trade4 === '' ? '' : ', ' + row.trade4) + 
-                    (row.trade5 === '' ? '' : ', ' + row.trade5));                
-                table.newRow();
+            let teamARows = [], teamBRows = [], teamCRows = [], noTeamRows = [];
+
+            _.map(rows, row => {                
+                if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team A')) {
+                    teamARows.push(row)
+                } else if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team B')) {
+                    teamBRows.push(row)
+                } else if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team C')) {
+                    teamCRows.push(row)
+                } else {
+                    noTeamRows.push(row)
+                }
             });
 
-            message.channel.send(`= Player transport tech =\n\n${table.toString()}`, {code:'asciidoc'});
+            if (teamARows.length) {
+                addHeadingRow(table, '*Team A*')
+                teamARows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            if (teamBRows.length) {
+                addHeadingRow(table, '*Team B*')
+                teamBRows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            if (teamCRows.length) {
+                addHeadingRow(table, '*Team C*')
+                teamCRows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            if (noTeamRows.length) {
+                if (teamARows.length || teamBRows.length || teamCRows.length) {
+                    addHeadingRow(table, '*Other*')
+                }
+                
+                noTeamRows.forEach(row => { addPlayerRow(table, row) });
+            }
+
+            message.channel.send(`= Player Transport Tech =\n\n${table.toString()}`, {code:'asciidoc'});
         });
 
         return;
@@ -82,58 +125,44 @@ exports.run = (client, message, args) => {
         return;
     }
 
-    if (mod1 !== '' && !validation.moduleRegEx.test(mod1)) {
-        message.channel.send(`Invalid module **${mod1}**\n${validation.moduleHelp}`);
+    if (mod1 !== '' && !lib.moduleRegEx.test(mod1)) {
+        message.channel.send(`Invalid module **${mod1}**\n${lib.moduleHelp}`);
         return;
     }
 
-    if (trade1 !== '' && !validation.tradeRegEx.test(trade1)) {
-        message.channel.send(`Invalid module **${trade1}**\n${validation.tradeHelp}`);
+    if (trade1 !== '' && !lib.tradeRegEx.test(trade1)) {
+        message.channel.send(`Invalid module **${trade1}**\n${lib.tradeHelp}`);
         return;
     }
 
-    if (trade2 !== '' && !validation.tradeRegEx.test(trade2)) {
-        message.channel.send(`Invalid module **${trade2}**\n${validation.tradeHelp}`);
+    if (trade2 !== '' && !lib.tradeRegEx.test(trade2)) {
+        message.channel.send(`Invalid module **${trade2}**\n${lib.tradeHelp}`);
         return;
     }
 
-    if (trade3 !== '' && !validation.tradeRegEx.test(trade3)) {
-        message.channel.send(`Invalid module **${trade3}**\n${validation.tradeHelp}`);
+    if (trade3 !== '' && !lib.tradeRegEx.test(trade3)) {
+        message.channel.send(`Invalid module **${trade3}**\n${lib.tradeHelp}`);
         return;
     }
 
-    if (trade4 !== '' && !validation.tradeRegEx.test(trade4)) {
-        message.channel.send(`Invalid module **${trade4}**\n${validation.tradeHelp}`);
+    if (trade4 !== '' && !lib.tradeRegEx.test(trade4)) {
+        message.channel.send(`Invalid module **${trade4}**\n${lib.tradeHelp}`);
         return;
     }    
 
-    if (trade5 !== '' && !validation.tradeRegEx.test(trade5)) {
-        message.channel.send(`Invalid module **${trade5}**\n${validation.tradeHelp}`);
+    if (trade5 !== '' && !lib.tradeRegEx.test(trade5)) {
+        message.channel.send(`Invalid module **${trade5}**\n${lib.tradeHelp}`);
         return;
     }
 
-    const allowedRoles = self.config.setOther;
     let userId = message.member.user.id;
     let username = message.member.nickname || message.member.user.username;
-    let target;
-
-    if (_.isEmpty(allowedRoles) || message.member.roles.some(role => allowedRoles.includes(role.name))) {
-        target = message.mentions.members.first();
-        if (!_.isEmpty(target)) {
-            userId = target.user.id;
-            username = target.user.nickname || target.user.username;
-        }
-    }
-
+    
     client.db.run(`REPLACE INTO tr_tech2 (userId, username, hold, module, trade1, trade2, trade3, trade4, trade5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, hold, mod1, trade1, trade2, trade3, trade4, trade5], function(error) {
         if (error) {
             return console.log(`Unable to save transport tech for user ${username} (${userId})`, error.message);
         }
     });
 
-    if (!_.isEmpty(target)) {
-        message.channel.send(`The transport tech for ${target.user} was updated.`);
-    } else {
-        message.channel.send(`Your transport tech was updated.`);
-    }
+    message.react(`👌`);
 };

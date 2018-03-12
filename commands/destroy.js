@@ -1,11 +1,11 @@
 const self = module.exports;
 
 exports.config = {
-    enabled: true
 };
 
 exports.help = {
     name: 'destroy',
+    category: 'Just for fun',
     description: 'Destroy stuff (designed for Paligan)',
     usage: 'destroy [something]'
 };

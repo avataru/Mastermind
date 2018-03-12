@@ -5,13 +5,12 @@ const self = module.exports;
 const HELP_TEXT = '!achievements [@player]'
 
 exports.config = {
-    enabled: true,
-    accent: 0xFFD700
 };
 
 exports.help = {
     name: 'achievements',
-    description: "Display a player's achievements.",
+    category: 'Achievements',
+    description: "Display all available achievements, or a player's achievements.",
     usage: HELP_TEXT
 };
 
