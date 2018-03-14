@@ -22,17 +22,17 @@ exports.run = (client, message, args) => {
             });
 
         const groupedCommands = _.groupBy(filteredCommands, 'help.category');
-        
+
         let text = '';
 
         _.keys(groupedCommands).forEach(key => {
-            text += '= ' + key + ' Commands =\n'
+            text += '\n= ' + key + ' Commands =\n'
             groupedCommands[key].forEach(c => {
                 text += `${client.config.prefix}${c.help.name}${' '.repeat(longest - c.help.name.length)} :: ${c.help.description}\n`;
             });
         });
 
-        message.channel.send(`[Use ${client.config.prefix}help [command name] for details]\n\n${text}`, {code:'asciidoc'});
+        message.channel.send(`[Use ${client.config.prefix}help [command name] for details]\n${text}`, {code:'asciidoc'});
     } else {
         let command = args[0].replace('!', '');
         if (_.has(client.commands, command)) {
