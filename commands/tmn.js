@@ -67,37 +67,37 @@ exports.run = (client, message, args) => {
 
             let table = new Table;
             let teamARows = [], teamBRows = [], teamCRows = [], noTeamRows = [];
-
+    
             _.map(rows, row => {                
-                if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team A')) {
+                if (message.guild.members.find('id', row.userId).roles.some(x => x.name === 'Team A')) {
                     teamARows.push(row)
-                } else if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team B')) {
+                } else if (message.guild.members.find('id', row.userId).roles.some(x => x.name === 'Team B')) {
                     teamBRows.push(row)
-                } else if (client.guilds.first().members.find('id', row.userId).roles.some(x => x.name === 'Team C')) {
+                } else if (message.guild.members.find('id', row.userId).roles.some(x => x.name === 'Team C')) {
                     teamCRows.push(row)
                 } else {
                     noTeamRows.push(row)
                 }
             });
-
+    
             if (teamARows.length) {
-                addHeadingRow(table, '*Team A*')
+                addHeadingRow(table, '= Team A =')
                 teamARows.forEach(row => { addPlayerRow(table, row) });
             }
-
+    
             if (teamBRows.length) {
-                addHeadingRow(table, '*Team B*')
+                addHeadingRow(table, '= Team B =')
                 teamBRows.forEach(row => { addPlayerRow(table, row) });
             }
-
+    
             if (teamCRows.length) {
-                addHeadingRow(table, '*Team C*')
+                addHeadingRow(table, '= Team C =')
                 teamCRows.forEach(row => { addPlayerRow(table, row) });
             }
-
+    
             if (noTeamRows.length) {
                 if (teamARows.length || teamBRows.length || teamCRows.length) {
-                    addHeadingRow(table, '*Other*')
+                    addHeadingRow(table, '= Other =')
                 }
                 
                 noTeamRows.forEach(row => { addPlayerRow(table, row) });
