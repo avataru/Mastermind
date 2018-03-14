@@ -32,24 +32,26 @@ exports.run = (client, message, args) => {
             return message.channel.send('I dont know that achievement, try one of these...\n\n' + lib.getAchievementsText());
         }
 
-        var targetID = args[0].replace("<@","").replace(">","").replace("!", "");
-        var targetDB = client.users.get(targetID)
+        let memberId = args[0].replace("<@","").replace(">","").replace("!", "");
+        let member = message.guild.members.find((x) => {
+            return x.id === memberId;
+        });
     
-        if (!targetDB) {
+        if (!member) {
             return message.channel.send('Who?! Never heard of them...');
         }
         
-        if (targetDB.id === message.member.user.id) {
+        if (member.id === message.member.user.id) {
             return message.channel.send("Hey! You can't nominate yourself.");
         }
         
-        var name = targetDB.nickname || targetDB.username;
+        var name = member.nickname || member.user.username;
                 
-        lib.addNomination(client.db, message.author.id, targetDB.id, name, achievement.id, Date.now());
+        lib.addNomination(client.db, message.author.id, member.id, name, achievement.id, Date.now());
 
-        lib.getNominationCount(client.db, targetDB.id, achievement.id, function(count) {
+        lib.getNominationCount(client.db, member.id, achievement.id, function(count) {
             if (count >= MIN_NOMINATIONS) {
-                lib.addAchievement(db, targetDB.id, name, achievement.id);
+                lib.addAchievement(db, member.id, name, achievement.id);
 
                 return message.channel.send(`${MIN_NOMINATIONS} reached. Achievent awarded!`);                
             } else {

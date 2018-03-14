@@ -68,7 +68,7 @@ exports.run = (client, message, args) => {
         target = message.mentions.members.first();
         if (!_.isEmpty(target)) {
             userId = target.user.id;
-            username = target.user.nickname || target.user.username;
+            username = target.nickname || target.user.username;
         }
     }
 

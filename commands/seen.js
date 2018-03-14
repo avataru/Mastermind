@@ -1,16 +1,26 @@
 const _ = require('lodash');
 const Table = require('easy-table');
 
-var updateEntry = function(db, userId, username, timestamp, messaged) {
-  db.run(`REPLACE INTO last_seen (userId, username, timestamp, messaged) VALUES (?, ?, ?, ?)`, [userId, username, timestamp, messaged], function(error) {
-    if (error) {
-        return console.log(`Unable to save last seen data for user ${username} (${userId})`, error.message);
+// fetch and update all guild members last messaged times
+var updateEntries = function(db, message) {
+  message.guild.members.array().forEach((member) => {
+    if (!member.user.bot && member.lastMessage) {
+      var name = member.nickname || member.user.username;
+      var messagedTime = buildMessage(member.lastMessage.createdTimestamp);
+
+      db.run(`REPLACE INTO last_seen (userId, username, timestamp, messaged) VALUES (?, ?, ?, ?)`, [member.id, name, member.lastMessage.createdTimestamp, messagedTime], function(error) {
+        if (error) {
+            return console.log(`Unable to save last seen data for user ${name} (${member.id})`, error.message);
+        }
+      });
     }
   });
 }
 
+// build friendly "last message" text
 var buildMessage = function(timestamp) {  
   var hours = Math.round((Date.now() - timestamp) / 3600000);
+
   return hours ? `${hours} hours ago.` : "just now...";
 }
 
@@ -21,7 +31,7 @@ exports.help = {
     name: "seen",
     category: 'White Star',
     description: "When was the last time a player messaged?",
-    usage: "seen [@user]."
+    usage: "seen [@player]."
 };
 
 exports.init = (client) => {
@@ -44,25 +54,10 @@ exports.init = (client) => {
 };
 
 exports.run = (client, message, args) => { 
-
-    var searchObj = message.guild,
-        targetID = message.author.id;
-  
+    
     if (args.length === 0) {
-      searchObj.members.forEach(function (target, targetID, mapObj) {
-        
-        if (targetID != process.env.DISCORD_BOT_ID) {
-          var targetDB = client.users.get(targetID) || {username: `<@${targetID}>`}
-          
-          if (targetDB.lastMessage && !targetDB.bot) {            
-            var name = targetDB.nickname || targetDB.username;
-            var messaged = buildMessage(targetDB.lastMessage.createdTimestamp);
-
-            updateEntry(client.db, targetDB.id, name, targetDB.lastMessage.createdTimestamp, messaged)            
-          }
-        }
-      });      
-
+      updateEntries(client.db, message);
+      // display all stored last messaged times
       client.db.all(`SELECT username, messaged FROM last_seen ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
         if (error) {
             return console.log(`Unable to retrieve last seen data.`, error.message);
@@ -76,34 +71,26 @@ exports.run = (client, message, args) => {
             table.newRow();
         });
 
-        message.channel.send("```" + table.sort('Player|des').toString() + "```"); 
-        return;   
+        return message.channel.send("```" + table.sort('Player|des').toString() + "```"); 
       });
     }
 
     // do we have a player param?
     if (args.length === 1 && args[0].indexOf("<@") >= 0 ) {
-      targetID = args[0].replace("<@","").replace(">","");
-      var targetDB = client.users.get(targetID) || {username: args[0]}      
-
-      // if this connection has a last messaged for the speciied user, then update the DB
-      if (targetDB.lastMessage) {
-        var name = targetDB.nickname || targetDB.username;
-        var messaged = buildMessage(targetDB.lastMessage.createdTimestamp);
-
-        updateEntry(client.db, targetDB.id, name, targetDB.lastMessage.createdTimestamp, messaged)
-      }
-
+      updateEntries(client.db, message);
+      
+      let memberId = args[0].replace("<@","").replace(">","").replace("!", "");
+      
       // read from DB and display for user, else display a "not seen" message
-      client.db.all(`SELECT username, messaged FROM last_seen WHERE userId = '${targetID}'`, [], (error, rows) => {
+      client.db.all(`SELECT username, messaged FROM last_seen WHERE userId = '${memberId}'`, [], (error, rows) => {
         if (error) {
             return console.log(`Unable to retrieve last seen data.`, error.message);
         }
 
         if (rows.length == 1) {
-          message.channel.send(`${rows[0].username} last messaged ${rows[0].messaged}`);
+          return message.channel.send(`${rows[0].username} last messaged ${rows[0].messaged}`);
         } else {
-          message.channel.send(`Who?! Never heard of them.`);
+          return message.channel.send(`Who?! Never heard of them.`);
         }        
       });
     }    

@@ -24,14 +24,16 @@ exports.run = (client, message, args) => {
         if (!lib.validatePlayerArg(client, message, args, HELP_TEXT))
             return;
 
-        var targetID = args[0].replace("<@","").replace(">","").replace("!", "");
-        var targetDB = client.users.get(targetID)
+        let memberId = args[0].replace("<@","").replace(">","").replace("!", "");
+        let member = message.guild.members.find((x) => {
+            return x.id === memberId;
+        });
     
-        if (!targetDB) {
+        if (!member) {
             return message.channel.send('Who?! Never heard of them.');
         }
         
-        lib.getAchievements(client.db, targetDB.id, function(rows) {
+        lib.getAchievements(client.db, member.id, function(rows) {
             var text = "";
             rows.forEach(row => {
                 
@@ -45,7 +47,7 @@ exports.run = (client, message, args) => {
             if (text != "") {
                 return message.channel.send(text);
             } else {
-                return message.channel.send("No achievements or nominations yet.");
+                return message.channel.send("No achievements or nominations... yet.");
             }
         });    
     } else {

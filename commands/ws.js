@@ -94,7 +94,7 @@ exports.run = (client, message, args) => {
                     for (let j = 0; j < team.length; j++) {
                         const player = team[j];
                         
-                        lib.addDrawnPlayer(client.db, player.user.id, player.user.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
+                        lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
                     }
                 }
 
@@ -102,7 +102,7 @@ exports.run = (client, message, args) => {
                 for (let j = 0; j < undrawnPlayers.length; j++) {
                     const player = undrawnPlayers[j];
                     
-                    lib.addDrawnPlayer(client.db, player.user.id, player.user.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
+                    lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
                 }
             
                 lib.displayCurrentDraw(client.db, message);
