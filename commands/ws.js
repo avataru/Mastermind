@@ -94,7 +94,7 @@ exports.run = (client, message, args) => {
                     for (let j = 0; j < team.length; j++) {
                         const player = team[j];
                         
-                        lib.addDrawnPlayer(client.db, player.user.id, player.user.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
+                        lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
                     }
                 }
 
@@ -102,7 +102,7 @@ exports.run = (client, message, args) => {
                 for (let j = 0; j < undrawnPlayers.length; j++) {
                     const player = undrawnPlayers[j];
                     
-                    lib.addDrawnPlayer(client.db, player.user.id, player.user.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
+                    lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
                 }
             
                 lib.displayCurrentDraw(client.db, message);
@@ -257,59 +257,31 @@ exports.run = (client, message, args) => {
                         return message.channel.send(`Um... looks like not all players have confirmed yet.`);
                     }
                     
-                    const players = message.guild.roles
+                    const wsPlayers = message.guild.roles
                         .find(role => role.name === lib.WS_PLAYER_ROLE)
                         .members;
-                    
-                    // clear all current team and alert roles for all players
-                    players.forEach(player => {
-                        lib.TEAMS.forEach(team => {
-                            let teamRole = message.guild.roles.find(role => role.name === team)
-                            
-                            if (teamRole) {
-                                player.removeRole(teamRole);
-                            }                            
-                        })
-                        lib.ALERTS.forEach(alert => {
-                            let alertRole = message.guild.roles.find(role => role.name === alert)
-                            
-                            if (alertRole) {
-                                player.removeRole(alertRole);
-                            }
-                        })
-                    });
 
                     const teams = _.groupBy(rows, 'team');
 
                     _.keys(teams).forEach(team => { 
                         
-                        if (team !== lib.UNDRAWN_TEAM_NAME) {
-                            let teamRole = message.guild.roles.find(role => role.name === team)
-                        
-                            if (teamRole) {
-                                teams[team].forEach(drawnPlayer => {
+                        teams[team].forEach(drawnPlayer => {
+                            const target = wsPlayers.find(wsPlayer => wsPlayer.id === drawnPlayer.userId);
 
-                                    const target = players.find((player) => {
-                                        return player.id === drawnPlayer.userId;
-                                    });
-        
-                                    if (target) {
-                                        // set the team role
-                                        target.addRole(teamRole);                                
-                                        // set the alert roles                            
-                                        lib.ALERTS.forEach(alert => {
-                                            let alertRole = message.guild.roles.find(role => role.name === alert)
-                                    
-                                            if (alertRole) {
-                                                target.removeRole(alertRole);
-                                            }
-                                        });
-                                    }
-                                });
+                            if (target) {
+                                let existingRoleNames = target.roles.map(role => role.name);
+                                let preservedRoleNames = _.difference(existingRoleNames, _.concat(lib.TEAMS, lib.ALERTS));
+                                let newRoleNames = team === lib.UNDRAWN_TEAM_NAME 
+                                    ? preservedRoleNames
+                                    : _.concat(preservedRoleNames, [ team ], lib.ALERTS)
+
+                                let newRoles = message.guild.roles.filter(role => newRoleNames.includes(role.name));
+
+                                target.setRoles(newRoles);
                             }
-                        }                                                
+                        });                                     
                     });
-
+                    
                     return message.channel.send('The draw has been finalized, all team roles are set. Good luck everyone!!!')
                 });
 

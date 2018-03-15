@@ -32,14 +32,16 @@ exports.run = (client, message, args) => {
             return message.channel.send('I dont know that achievement, try one of these...\n\n' + lib.getAchievementsText());
         }
 
-        var targetID = args[0].replace("<@","").replace(">","").replace("!", "");
-        var targetDB = client.users.get(targetID)
+        let memberId = args[0].replace("<@","").replace(">","").replace("!", "");
+        let member = message.guild.members.find((x) => {
+            return x.id === memberId;
+        });
     
-        if (!targetDB) {
+        if (!member) {
             return message.channel.send('Who?! Never heard of them.');
         }  
 
-        lib.removeAchievement(client.db, targetDB.id, achievement.id);
+        lib.removeAchievement(client.db, member.id, achievement.id);
 
         return message.react(`👌`);
     } else {

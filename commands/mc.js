@@ -76,7 +76,7 @@ exports.run = (client, message, args) => {
         }
     }
     
-    client.db.all(`SELECT command, channel FROM disabled_commands ORDER BY command COLLATE NOCASE ASC`, [], (error, rows) => {
+    client.db.all(`SELECT command FROM disabled_commands WHERE channel = '${message.channel.name}' ORDER BY command COLLATE NOCASE ASC`, [], (error, rows) => {
         if (error) {
             return console.log(`Unable to retrieve the disabled commands`, error.message);
         }
@@ -84,7 +84,6 @@ exports.run = (client, message, args) => {
         let table = new Table;
         _.map(rows, row => {
             table.cell('Command', row.command);
-            table.cell('Channel', row.channel);
             table.newRow();
         });
 
