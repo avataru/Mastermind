@@ -70,16 +70,20 @@ exports.run = (client, message, args) => {
             let table = new Table;
             let teamARows = [], teamBRows = [], teamCRows = [], noTeamRows = [];
     
-            _.map(rows, row => {                
-                if (message.guild.members.find('id', row.userId).roles.some(x => x.name === 'Team A')) {
-                    teamARows.push(row)
-                } else if (message.guild.members.find('id', row.userId).roles.some(x => x.name === 'Team B')) {
-                    teamBRows.push(row)
-                } else if (message.guild.members.find('id', row.userId).roles.some(x => x.name === 'Team C')) {
-                    teamCRows.push(row)
-                } else {
-                    noTeamRows.push(row)
-                }
+            _.map(rows, row => {
+                let member = message.guild.members.find('id', row.userId);
+    
+                if (member) {
+                    if (member.roles.some(x => x.name === 'Team A')) {
+                        teamARows.push(row)
+                    } else if (member.roles.some(x => x.name === 'Team B')) {
+                        teamBRows.push(row)
+                    } else if (member.roles.some(x => x.name === 'Team C')) {
+                        teamCRows.push(row)
+                    } else {
+                        noTeamRows.push(row)
+                    }
+                }            
             });
     
             if (teamARows.length) {
