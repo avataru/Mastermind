@@ -1,5 +1,6 @@
 {
     "name": "Mastermind",
     "token": "YOUR-TOKEN",
-    "prefix": "!"
+    "prefix": "!",
+    "db_instance": "YOUR-INSTANCE"
 }
