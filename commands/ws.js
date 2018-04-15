@@ -27,23 +27,6 @@ exports.help = {
 
 };
 
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS white_star (
-            userId TEXT NOT NULL PRIMARY KEY,
-            username TEXT NOT NULL,
-            team TEXT,
-            confirmed TEXT
-        );`);
-        transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON white_star (username);`);
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the white_star table`, error.message);
-            }
-        });
-    });
-};
-
 exports.run = (client, message, args) => {
 
     if (args && args.length > 0) {

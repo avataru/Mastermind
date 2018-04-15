@@ -37,33 +37,11 @@ exports.help = {
         'Example: !ttr 10 twrp3 cbe5 scmp3 trbo3'
 };
 
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS tr_tech2 (
-            userId TEXT NOT NULL PRIMARY KEY,
-            username TEXT NOT NULL,
-            hold TEXT,
-            module TEXT,
-            trade1 TEXT,
-            trade2 TEXT,
-            trade3 TEXT,
-            trade4 TEXT,
-            trade5 TEXT
-        );`);
-        transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON tr_tech2 (username);`);
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the tr_tech2 table`, error.message);
-            }
-        });         
-    });
-};
-
 exports.run = (client, message, args) => {
     
     // display
     if (args === null || args.length === 0) {
-        client.db.all(`SELECT userId, username, hold, module, trade1, trade2, trade3, trade4, trade5 FROM tr_tech2 ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+        client.db.query(`SELECT userId, username, hold, module, trade1, trade2, trade3, trade4, trade5 FROM tr_tech ORDER BY username ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the transport tech`, error.message);
             }
@@ -162,7 +140,7 @@ exports.run = (client, message, args) => {
     let userId = message.member.user.id;
     let username = message.member.nickname || message.member.user.username;
     
-    client.db.run(`REPLACE INTO tr_tech2 (userId, username, hold, module, trade1, trade2, trade3, trade4, trade5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, hold, mod1, trade1, trade2, trade3, trade4, trade5], function(error) {
+    client.db.query(`REPLACE INTO tr_tech (userId, username, hold, module, trade1, trade2, trade3, trade4, trade5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, hold, mod1, trade1, trade2, trade3, trade4, trade5], function(error) {
         if (error) {
             return console.log(`Unable to save transport tech for user ${username} (${userId})`, error.message);
         }

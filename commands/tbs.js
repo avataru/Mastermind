@@ -37,32 +37,11 @@ exports.help = {
         'Example: !tbs dlzr6 omg1 dst2 tlp5 sanc'
 };
 
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS bs_tech (
-            userId TEXT NOT NULL PRIMARY KEY,
-            username TEXT NOT NULL,
-            weapon TEXT,
-            shield TEXT,
-            mod1 TEXT,
-            mod2 TEXT,
-            mod3 TEXT,
-            mod4 TEXT
-        );`);
-        transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON bs_tech (username);`);
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the bs_tech table`, error.message);
-            }
-        });
-    });
-};
-
 exports.run = (client, message, args) => {
     
     // display all
     if (args === null || args.length === 0) {
-        client.db.all(`SELECT userId, username, weapon, shield, mod1, mod2, mod3, mod4 FROM bs_tech ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+        client.db.query(`SELECT userId, username, weapon, shield, mod1, mod2, mod3, mod4 FROM bs_tech ORDER BY username ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the battleship tech`, error.message);
             }
@@ -155,7 +134,7 @@ exports.run = (client, message, args) => {
     let userId = message.member.user.id;
     let username = message.member.nickname || message.member.user.username;
 
-    client.db.run(`REPLACE INTO bs_tech (userId, username, weapon, shield, mod1, mod2, mod3, mod4) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, weapon, shield, mod1, mod2, mod3, mod4], function(error) {
+    client.db.query(`REPLACE INTO bs_tech (userId, username, weapon, shield, mod1, mod2, mod3, mod4) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, weapon, shield, mod1, mod2, mod3, mod4], function(error) {
         if (error) {
             return console.log(`Unable to save battleship tech for user ${username} (${userId})`, error.message);
         }

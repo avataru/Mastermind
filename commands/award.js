@@ -15,10 +15,6 @@ exports.help = {
     usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
 };
 
-exports.init = (client) => {
-    lib.initDb(client.db);
-};
-
 exports.run = (client, message, args) => {
     
     if (args && args.length == 2) {       
@@ -42,7 +38,7 @@ exports.run = (client, message, args) => {
         }
 
         if (member.id === message.member.user.id) {
-            return message.channel.send("Hey! You can't award yourself.");
+            //return message.channel.send("Hey! You can't award yourself.");
         }
 
         var name = member.nickname || member.user.username;
