@@ -1,9 +1,9 @@
 {
     "name": "mastermind",
-    "version": "1.0.0",
-    "description": "Systems Alliance Bot",
+    "version": "1.1.0",
+    "description": "Hades Star Bot",
     "main": "bot.js",
-    "author": "Mihai Zaharie",
+    "author": "Mihai Zaharie & telgar",
     "scripts": {
         "start": "node bot.js"
     },
