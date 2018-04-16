@@ -11,14 +11,21 @@ const mcLib = require('./lib/mc_library');
 const mysql = require('mysql2');
 
 // create the connection to database
-const db = mysql.createConnection({
-    user: config.db_username,
-    password: config.db_password,
-    database: config.db_database,
-    host: '127.0.0.1',
-    port: 3306
-    //socketPath: `/cloudsql/${config.db_instance}`
-});
+const db = mysql.createConnection(
+    config.devMode ? 
+    {
+        user: config.db_username,
+        password: config.db_password,
+        database: config.db_database,
+        host: '127.0.0.1',
+        port: 3306
+    } :
+    {
+        user: config.db_username,
+        password: config.db_password,
+        database: config.db_database,
+        socketPath: `/cloudsql/${config.db_instance}`
+    });
 
 client.on('ready', () => {
 

@@ -38,7 +38,7 @@ exports.run = (client, message, args) => {
         }
 
         if (member.id === message.member.user.id) {
-            //return message.channel.send("Hey! You can't award yourself.");
+            return message.channel.send("Hey! You can't award yourself.");
         }
 
         var name = member.nickname || member.user.username;
