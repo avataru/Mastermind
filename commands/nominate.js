@@ -15,10 +15,6 @@ exports.help = {
         "Use !achievements to see a list of valid achievents. It takes " + MIN_NOMINATIONS + " nominations to get an achievement."
 };
 
-exports.init = (client) => {
-    lib.initDb(client.db);
-};
-
 exports.run = (client, message, args) => {
     
     if (args && args.length == 2) {       

@@ -14,10 +14,6 @@ exports.help = {
     usage: HELP_TEXT
 };
 
-exports.init = (client) => {
-    lib.initDb(client.db);
-};
-
 exports.run = (client, message, args) => {
     if (args && args.length == 1) {       
 

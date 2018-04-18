@@ -15,10 +15,6 @@ exports.help = {
     usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
 };
 
-exports.init = (client) => {
-    lib.initDb(client.db);
-};
-
 exports.run = (client, message, args) => {
     
     if (args && args.length == 2) {       

@@ -13,23 +13,8 @@ exports.help = {
     usage: 'mc [+-][command name]'
 };
 
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS disabled_commands (
-            command TEXT NOT NULL,
-            channel TEXT NOT NULL,
-            PRIMARY KEY (command, channel),
-            UNIQUE (command, channel)
-        );`);        
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the disabled_commands table`, error.message);
-            }
-        });
-    });
-};
-
 exports.run = (client, message, args) => {
+
     if (args && args.length == 1) {
         const toggledCommand = args[0] || '';
         
@@ -56,7 +41,7 @@ exports.run = (client, message, args) => {
         }  
 
         if (disable) {
-            client.db.run(`INSERT OR IGNORE INTO disabled_commands (command, channel)
+            client.db.query(`INSERT OR IGNORE INTO disabled_commands (command, channel)
                     VALUES ('${command}', '${message.channel.name}')`,
             function(error) {
                 if (error) {
@@ -66,7 +51,7 @@ exports.run = (client, message, args) => {
         
             return message.react(`👌`);
         } else {
-            client.db.run(`DELETE FROM disabled_commands WHERE command = '${command}' AND channel = '${message.channel.name}'`, [], function(error) {
+            client.db.query(`DELETE FROM disabled_commands WHERE command = '${command}' AND channel = '${message.channel.name}'`, [], function(error) {
                 if (error) {
                     return console.log(`Unable to remove nominations for user ${userId}`, error.message);
                 }
@@ -76,7 +61,7 @@ exports.run = (client, message, args) => {
         }
     }
     
-    client.db.all(`SELECT command FROM disabled_commands WHERE channel = '${message.channel.name}' ORDER BY command COLLATE NOCASE ASC`, [], (error, rows) => {
+    client.db.query(`SELECT command FROM disabled_commands WHERE channel = '${message.channel.name}' ORDER BY command ASC`, [], (error, rows) => {
         if (error) {
             return console.log(`Unable to retrieve the disabled commands`, error.message);
         }

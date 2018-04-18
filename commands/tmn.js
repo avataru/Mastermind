@@ -32,35 +32,14 @@ exports.help = {
     usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
         lib.moduleHelp + '\n' +
         lib.miningHelp + '\n\n' + 
-        'Example: !tmn twrp3 rmt4 crch1'
-};
-
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS mn_tech (
-            userId TEXT NOT NULL PRIMARY KEY,
-            username TEXT NOT NULL,
-            module TEXT,
-            mining1 TEXT,
-            mining2 TEXT,
-            mining3 TEXT,
-            mining4 TEXT,
-            mining5 TEXT
-        );`);
-        transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON mn_tech (username);`);
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the mn_tech table`, error.message);
-            }
-        });
-    });
+        'Example: !tmn warp3 remote4 crunch1'
 };
 
 exports.run = (client, message, args) => {
     
     // display
     if (args === null || args.length === 0) {
-        client.db.all(`SELECT userId, username, module, mining1, mining2, mining3, mining4, mining5 FROM mn_tech ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+        client.db.query(`SELECT userId, username, module, mining1, mining2, mining3, mining4, mining5 FROM mn_tech ORDER BY username ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the miner tech`, error.message);
             }
@@ -153,7 +132,7 @@ exports.run = (client, message, args) => {
     let userId = message.member.user.id;
     let username = message.member.nickname || message.member.user.username;
 
-    client.db.run(`REPLACE INTO mn_tech (userId, username, module, mining1, mining2, mining3, mining4, mining5) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, mod1, mining1, mining2, mining3, mining4, mining5], function(error) {
+    client.db.query(`REPLACE INTO mn_tech (userId, username, module, mining1, mining2, mining3, mining4, mining5) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [userId, username, mod1, mining1, mining2, mining3, mining4, mining5], function(error) {
         if (error) {
             return console.log(`Unable to save miner tech for user ${username} (${userId})`, error.message);
         }

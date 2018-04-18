@@ -22,26 +22,11 @@ exports.help = {
            '!ws redraw [@player]\n\n' +
            'To replace a player with another undrawn player:\n' +
            '!ws replace [@player] with [@player]\n\n' +
+           'To swap two drawn players\' teams:\n' +
+           '!ws swap [@player] with [@player]\n\n' +
            'To finalize the current draw, and set all roles:\n' +
            '!ws finalize'
 
-};
-
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS white_star (
-            userId TEXT NOT NULL PRIMARY KEY,
-            username TEXT NOT NULL,
-            team TEXT,
-            confirmed TEXT
-        );`);
-        transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON white_star (username);`);
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the white_star table`, error.message);
-            }
-        });
-    });
 };
 
 exports.run = (client, message, args) => {
@@ -227,6 +212,65 @@ exports.run = (client, message, args) => {
                     lib.updateDrawnPlayer(client.db, drawnPlayerRow.userId, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO);
                     // set the previously undrawn player to drawn in the appropriate team
                     lib.updateDrawnPlayer(client.db, undrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);                   
+
+                    message.react(`👌`)
+                });
+
+                break;
+            }
+            case "swap": {
+                // permission validation
+                if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+                    return message.react(`🚫`); 
+                }
+
+                // player validation
+                let playerArg = args[1] || ''
+                
+                if (!lib.validatePlayerArg(client, message, playerArg))
+                    return;
+
+                var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
+                var targetDB = client.users.get(targetID)
+            
+                if (!targetDB) {
+                    return message.channel.send('Who?! Never heard of them.');
+                }                
+
+                // new player validation
+                let newPlayerArg = args[3] || ''
+
+                if (!lib.validatePlayerArg(client, message, newPlayerArg))
+                    return;
+
+                var newTargetID = newPlayerArg.replace("<@","").replace(">","").replace("!", "");
+                var newTargetDB = client.users.get(newTargetID)
+            
+                if (!newTargetDB) {
+                    return message.channel.send(`Who?! I don't know who to swap them with.`);
+                }                
+                
+                lib.getDrawnPlayers(client.db, function(rows) {
+                    
+                    let drawnPlayer1Row = _.find(rows, (row) => {
+                        return row.userId == targetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
+                    });
+
+                    if (!drawnPlayer1Row) {
+                        return message.channel.send(`Um... both players need to be drawn into a team.`);
+                    }
+
+                    let drawnPlayer2Row = _.find(rows, (row) => {
+                        return row.userId == newTargetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
+                    });
+
+                    if (!drawnPlayer2Row) {
+                        return message.channel.send(`Um... both players need to be drawn into a team.`);
+                    }
+
+                    // swap the drawn players' teams
+                    lib.updateDrawnPlayer(client.db, drawnPlayer1Row.userId, drawnPlayer2Row.team, drawnPlayer1Row.confirmed);
+                    lib.updateDrawnPlayer(client.db, drawnPlayer2Row.userId, drawnPlayer1Row.team, drawnPlayer2Row.confirmed);                   
 
                     message.react(`👌`)
                 });

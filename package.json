@@ -1,9 +1,9 @@
 {
     "name": "mastermind",
-    "version": "1.0.0",
-    "description": "Systems Alliance Bot",
+    "version": "1.1.0",
+    "description": "Hades Star Bot",
     "main": "bot.js",
-    "author": "Mihai Zaharie",
+    "author": "Mihai Zaharie & telgar",
     "scripts": {
         "start": "node bot.js"
     },
@@ -16,7 +16,6 @@
         "moment": "^2.21.0",
         "moment-duration-format": "^2.2.2",
         "moment-timezone": "^0.5.14",
-        "sqlite3": "^3.1.13",
-        "sqlite3-transactions": "0.0.5"
+        "mysql2": "^1.5.3"
     }
 }

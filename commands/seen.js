@@ -20,7 +20,7 @@ let updateEntries = function(db, message) {
       var name = member.nickname || member.user.username;
       var messagedTime = buildMessage(member.lastMessage.createdTimestamp);
 
-      db.run(`REPLACE INTO last_seen (userId, username, timestamp, messaged) VALUES (?, ?, ?, ?)`, [member.id, name, member.lastMessage.createdTimestamp, messagedTime], function(error) {
+      db.query(`REPLACE INTO last_seen (userId, username, timestamp, messaged) VALUES (?, ?, ?, ?)`, [member.id, name, member.lastMessage.createdTimestamp, messagedTime], function(error) {
         if (error) {
             return console.log(`Unable to save last seen data for user ${name} (${member.id})`, error.message);
         }
@@ -46,31 +46,12 @@ exports.help = {
     usage: "seen [@player]."
 };
 
-exports.init = (client) => {
-  client.db.beginTransaction((error, transaction) => {
-
-      // table creation for storing last seen data
-      transaction.run(`CREATE TABLE IF NOT EXISTS last_seen (
-          userId TEXT NOT NULL PRIMARY KEY,
-          username TEXT NOT NULL,
-          timestamp TEXT NOT NULL,
-          messaged TEXT NOT NULL
-      );`);
-      transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON last_seen (username);`);
-      transaction.commit(error => {
-          if (error) {
-              return console.log(`Unable to create the last_seen table`, error.message);
-          }
-      });
-  });
-};
-
 exports.run = (client, message, args) => { 
     
     if (args.length === 0) {
       updateEntries(client.db, message);
       // display all stored last messaged times
-      client.db.all(`SELECT userId, username, messaged FROM last_seen ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+      client.db.query(`SELECT userId, username, messaged FROM last_seen ORDER BY username ASC`, [], (error, rows) => {
         if (error) {
             return console.log(`Unable to retrieve last seen data.`, error.message);
         }
@@ -128,7 +109,7 @@ exports.run = (client, message, args) => {
       let memberId = args[0].replace("<@","").replace(">","").replace("!", "");
       
       // read from DB and display for user, else display a "not seen" message
-      client.db.all(`SELECT username, messaged FROM last_seen WHERE userId = '${memberId}'`, [], (error, rows) => {
+      client.db.query(`SELECT username, messaged FROM last_seen WHERE userId = '${memberId}'`, [], (error, rows) => {
         if (error) {
             return console.log(`Unable to retrieve last seen data.`, error.message);
         }

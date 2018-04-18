@@ -28,27 +28,11 @@ exports.help = {
     usage: 'tz [timezone]'
 };
 
-exports.init = (client) => {
-    client.db.beginTransaction((error, transaction) => {
-        transaction.run(`CREATE TABLE IF NOT EXISTS timezones (
-            userId TEXT NOT NULL PRIMARY KEY,
-            username TEXT NOT NULL,
-            timezone TEXT
-        );`);
-        transaction.run(`CREATE UNIQUE INDEX IF NOT EXISTS unique_username ON timezones (username);`);
-        transaction.commit(error => {
-            if (error) {
-                return console.log(`Unable to create the timezones table`, error.message);
-            }
-        });
-    });
-};
-
 exports.run = (client, message, args) => {
     const timezone = args[0] || '';
 
     if (_.isEmpty(args[0])) {
-        client.db.all(`SELECT userId, username, timezone FROM timezones ORDER BY username COLLATE NOCASE ASC`, [], (error, rows) => {
+        client.db.query(`SELECT userId, username, timezone FROM timezones ORDER BY username ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve thge timezones`, error.message);
             }
@@ -120,7 +104,7 @@ exports.run = (client, message, args) => {
         }
     }
 
-    client.db.run(`REPLACE INTO timezones (userId, username, timezone) VALUES (?, ?, ?)`, [userId, username, timezone], function(error) {
+    client.db.query(`REPLACE INTO timezones (userId, username, timezone) VALUES (?, ?, ?)`, [userId, username, timezone], function(error) {
         if (error) {
             return console.log(`Unable to save timezone "${timezone}" for user ${username} (${userId})`, error.message);
         }

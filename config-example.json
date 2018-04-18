@@ -1,5 +1,9 @@
 {
     "name": "Mastermind",
-    "token": "YOUR-TOKEN",
-    "prefix": "!"
+    "token": "YOUR-DISCORD-TOKEN",
+    "prefix": "!",
+    "db_instance": "YOUR-GCE-SQL-INSTANCE",
+    "db_username": "YOUR-SQL_USERNAME",
+    "db_password": "YOUR-SQL_PASSWORD",
+    "db_database": "YOUR-SQL-DATABASE"
 }
