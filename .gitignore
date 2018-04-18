@@ -3,3 +3,5 @@ config.json
 /.vscode
 db/mastermind.db
 sandbox.js
+
+\.gitconfig

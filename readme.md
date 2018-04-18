@@ -6,8 +6,8 @@ This bot was created for private use on the (Hades' Star) Systems Alliance Disco
 * Discord.js Commando docs: https://discord.js.org/#/docs/commando/master/general/first-steps
 * Discord.js Commando guide: https://github.com/discordjs/Commando-guide
 
-Examples:
+Inspired by:
 
 https://gist.github.com/eslachance/3349734a98d30011bb202f47342601d3
 https://github.com/eslachance/evie.selfbot
-
+https://github.com/Favetti/hadesbotty
