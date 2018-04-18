@@ -18,7 +18,7 @@ let addHeadingRow = function(table, heading) {
   }
 
 exports.config = {
-    setOther: ['First Officer', 'Officer', 'Devs']
+    setOther: ['First Officer', 'Officer']
 };
 
 exports.help = {
@@ -91,18 +91,18 @@ exports.run = (client, message, args) => {
         return;
     }
 
-    const allowedRoles = self.config.setOther;
     let userId = message.member.user.id;
     let username = message.member.nickname || message.member.user.username;
-    let target;
-
-    if (_.isEmpty(allowedRoles) || message.member.roles.some(role => allowedRoles.includes(role.name))) {
-        target = message.mentions.members.first();
-        if (!_.isEmpty(target)) {
+    
+    let target = message.mentions.members.first();
+    if (!_.isEmpty(target)) {
+        if (!_.isEmpty(self.config.setOther) || message.member.roles.some(role => self.config.setOther.includes(role.name))) {
             userId = target.user.id;
             username = target.nickname || target.user.username;
+        } else {
+            return message.react(`🚫`);
         }
-    }
+    }    
 
     client.db.query(`REPLACE INTO timezones (userId, username, timezone) VALUES (?, ?, ?)`, [userId, username, timezone], function(error) {
         if (error) {

@@ -7,7 +7,7 @@ const pjson = require('../package.json');
 const self = module.exports;
 
 exports.config = {    
-    enabledRoles: ['First Officer', 'Officer', 'Devs']
+    enabledRoles: ['First Officer', 'Officer']
 };
 
 exports.help = {

@@ -5,7 +5,7 @@ const self = module.exports;
 const HELP_TEXT = '!revoke @player achievement'
 
 exports.config = {
-    enabledRoles: ['First Officer', 'Officer', 'Devs']
+    enabledRoles: ['First Officer', 'Officer']
 };
 
 exports.help = {
