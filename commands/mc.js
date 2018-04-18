@@ -41,7 +41,7 @@ exports.run = (client, message, args) => {
         }  
 
         if (disable) {
-            client.db.query(`INSERT OR IGNORE INTO disabled_commands (command, channel)
+            client.db.query(`INSERT IGNORE INTO disabled_commands (command, channel)
                     VALUES ('${command}', '${message.channel.name}')`,
             function(error) {
                 if (error) {
