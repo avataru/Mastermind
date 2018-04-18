@@ -34,7 +34,7 @@ exports.help = {
         lib.weaponHelp + '\n' +
         lib.shieldHelp + '\n' +
         lib.moduleHelp + '\n\n' + 
-        'Example: !tbs dlzr6 omg1 dst2 tlp5 sanc'
+        'Example: !tbs dual6 omega1 destiny2 warp5 sanc'
 };
 
 exports.run = (client, message, args) => {

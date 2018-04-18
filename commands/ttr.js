@@ -34,7 +34,7 @@ exports.help = {
     usage: 'ttr [hold] [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
         lib.moduleHelp + '\n' +
         lib.tradeHelp + '\n\n' + 
-        'Example: !ttr 10 twrp3 cbe5 scmp3 trbo3'
+        'Example: !ttr 10 warp3 cargobay3 computer1 boost2'
 };
 
 exports.run = (client, message, args) => {

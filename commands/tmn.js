@@ -32,7 +32,7 @@ exports.help = {
     usage: 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
         lib.moduleHelp + '\n' +
         lib.miningHelp + '\n\n' + 
-        'Example: !tmn twrp3 rmt4 crch1'
+        'Example: !tmn warp3 remote4 crunch1'
 };
 
 exports.run = (client, message, args) => {
