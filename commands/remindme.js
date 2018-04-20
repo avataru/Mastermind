@@ -15,23 +15,29 @@ exports.help = {
 
 exports.run = (client, message, args) => {
     const argument = args.join(' ');
-    args = argument.split(/\s+t(?:o|hat)\s+/);
-    const time = chrono.parseDate(args[0]);
-
-    const reminder = (args[1] || '')
+    const timeText = argument.split(/\s+t(?:o|hat)\s+/, 1)[0];
+    const time = chrono.parseDate(timeText);
+    let reminder = argument.replace(timeText, '');
+    reminder = (reminder || '')
         .replace(/\s+i am\s+/gi, ' you are ')
         .replace(/\s+my\s+/gi, ' your ')
         .replace(/\s+(?:i|me)\s+/gi, ' you ');
 
     const delay = moment(time).valueOf() - moment().valueOf();
 
-    message.react(`👌`);
+    if (delay) {
+        message.react(`👌`);
 
-    setTimeout((reminder) => {
-        if (!_.isEmpty(reminder)) {
-            message.reply(`It's time to ${reminder}`);
-        } else {
-            message.reply(`It's time`);
-        }
-    }, delay, reminder);
+        setTimeout((reminder) => {
+            if (!_.isEmpty(reminder)) {
+                message.reply(`It's time${reminder}`);
+            } else {
+                message.reply(`It's time`);
+            }
+        }, delay, reminder);
+    } else {
+        return message.react(`❔`);
+    }
+
+    
 };
