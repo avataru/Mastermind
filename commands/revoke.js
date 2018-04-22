@@ -12,7 +12,9 @@ exports.help = {
     name: 'revoke',
     category: 'Achievements',
     description: "Revokes a player's achievement.",
-    usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
+    usage: () => { 
+        return HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents.";
+    }
 };
 
 exports.run = (client, message, args) => {

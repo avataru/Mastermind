@@ -12,7 +12,9 @@ exports.help = {
     name: 'award',
     category: 'Achievements',
     description: 'Awards a player with an achievement.',
-    usage: HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."
+    usage: () => { 
+        return HELP_TEXT + '\n\n' + "Use !achievements to see a list of valid achievents."; 
+    }
 };
 
 exports.run = (client, message, args) => {

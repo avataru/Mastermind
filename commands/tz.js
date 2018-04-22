@@ -8,14 +8,14 @@ let addHeadingRow = function(table, heading) {
     table.cell('Timezone', '');
     table.cell('Current time', ''); 
     table.newRow();
-  } 
+} 
   
-  let addPlayerRow = function(table, row) {
+let addPlayerRow = function(table, row) {
     table.cell('Player', row.username);
     table.cell('Timezone', row.timezone);
     table.cell('Current time', moment().tz(row.timezone).format('h:mm a'));  
     table.newRow();
-  }
+}
 
 exports.config = {
     setOther: ['First Officer', 'Officer']
@@ -25,7 +25,7 @@ exports.help = {
     name: 'tz',
     category: 'White Star',
     description: 'Manage player timezone information.',
-    usage: 'tz [timezone]'
+    usage: () => { return 'tz [timezone]'; }
 };
 
 exports.run = (client, message, args) => {

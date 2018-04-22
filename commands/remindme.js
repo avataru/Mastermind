@@ -10,7 +10,7 @@ exports.help = {
     name: 'remindme',
     category: 'White Star',
     description: 'Reminds you of something at some point.',
-    usage: 'remindme [time] to [something]'
+    usage: () => { return 'remindme [time] to [something]'; }
 };
 
 exports.run = (client, message, args) => {

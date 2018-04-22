@@ -11,7 +11,7 @@ exports.help = {
     name: 'achievements',
     category: 'Achievements',
     description: "Display all available achievements, or a player's achievements.",
-    usage: HELP_TEXT
+    usage: () => { return HELP_TEXT; } 
 };
 
 exports.run = (client, message, args) => {

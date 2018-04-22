@@ -31,10 +31,12 @@ exports.help = {
     name: 'ttr',
     category: 'White Star',
     description: 'Manage player transport information.',
-    usage: 'ttr [hold] [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
-        lib.moduleHelp + '\n' +
-        lib.tradeHelp + '\n\n' + 
-        'Example: !ttr 10 warp3 cargobay3 computer1 boost2'
+    usage: () => { 
+        return 'ttr [hold] [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
+               lib.moduleHelp + '\n' +
+               lib.tradeHelp + '\n\n' + 
+               'Example: !ttr 10 warp3 cargobay3 computer1 boost2';
+    }
 };
 
 exports.run = (client, message, args) => {

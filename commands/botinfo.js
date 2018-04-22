@@ -14,7 +14,7 @@ exports.help = {
     name: 'botinfo',    
     category: 'Misc',
     description: 'Shows bot running info.',
-    usage: 'botinfo'
+    usage: () => { return 'botinfo'; }
 };
 
 exports.run = (client, message, args) => {

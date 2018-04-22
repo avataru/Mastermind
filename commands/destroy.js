@@ -7,7 +7,7 @@ exports.help = {
     name: 'destroy',
     category: 'Just for fun',
     description: 'Destroy stuff (designed for Paligan)',
-    usage: 'destroy [something]'
+    usage: () => { return 'destroy [something]'; }
 };
 
 exports.run = (client, message, args) => {

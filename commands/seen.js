@@ -43,7 +43,7 @@ exports.help = {
     name: "seen",
     category: 'White Star',
     description: "When was the last time a player messaged?",
-    usage: "seen [@player]."
+    usage: () => { return "seen [@player]."; }
 };
 
 exports.run = (client, message, args) => { 

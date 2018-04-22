@@ -11,22 +11,36 @@ exports.help = {
     name: 'ws',
     category: 'White Star',
     description: 'Manage White Star participant draws.',
-    usage: '\n' + 
-           'To display the current draw:\n' +
-           '!ws\n\n' +
-           'To make a new random draw:\n' +
-           '!ws draw [white star size] [number of teams]\n\n' + 
-           'To confirm your place in the next White Star:\n' +
-           '!ws confirm [y/n]\n\n' + 
-           'To replace a player with a random undrawn player:\n' +
-           '!ws redraw [@player]\n\n' +
-           'To replace a player with another undrawn player:\n' +
-           '!ws replace [@player] with [@player]\n\n' +
-           'To swap two drawn players\' teams:\n' +
-           '!ws swap [@player] with [@player]\n\n' +
-           'To finalize the current draw, and set all roles:\n' +
-           '!ws finalize'
+    usage: (message) => {
 
+        let text = '\n';
+
+        if (message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+            text +=  
+            '= Officers =\n\n' +
+            'To make a new random draw:\n' +
+            '!ws draw [white star size] [number of teams]\n\n' +             
+            'To replace a player with a random undrawn player:\n' +
+            '!ws redraw [@player]\n\n' +
+            'To replace a player with another undrawn player:\n' +
+            '!ws replace [@player] with [@player]\n\n' +
+            'To swap two players\' teams:\n' +
+            '!ws swap [@player] with [@player]\n\n' +
+            'To finalize the current draw, and set all roles:\n' +
+            '!ws finalize\n\n' +             
+            '= Everyone =\n\n';
+        } 
+        
+        text += 
+        'To display the current draw:\n' +
+        '!ws\n\n' +        
+        'To confirm your place in the next White Star:\n' +
+        '!ws confirm [y/n]\n\n' + 
+        'To set your BS job in the next White Star:\n' +
+        '!ws job [job] [@player]';
+        
+        return text;
+    } 
 };
 
 exports.run = (client, message, args) => {
@@ -104,6 +118,29 @@ exports.run = (client, message, args) => {
                 }
 
                 lib.confirmPlayerDraw(client.db, message.author.id, confirmed);
+
+                message.react(`👌`)
+
+                break;
+            }
+            case "job": {
+                // argument validation
+                let job = args[1] || '';
+                job = job.toLowerCase();
+
+                let userId = message.author.id;
+
+                let target = message.mentions.members.first();
+                
+                if (!_.isEmpty(target)) {
+                    if (message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+                        userId = target.user.id;
+                    } else {
+                        return message.react(`🚫`); 
+                    }
+                }                
+                               
+                lib.setPlayerJob(client.db, userId, job);
 
                 message.react(`👌`)
 

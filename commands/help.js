@@ -8,7 +8,7 @@ exports.help = {
     name: 'help',
     category: 'Misc',
     description: 'Displays available commands, and command help.',
-    usage: 'help [command name]'
+    usage: () => { return 'help [command name]'; }
 };
 
 exports.run = (client, message, args) => {
@@ -37,7 +37,7 @@ exports.run = (client, message, args) => {
         let command = args[0].replace('!', '');
         if (_.has(client.commands, command)) {
             command = client.commands[command];
-            message.channel.send(`= ${command.help.name} =\n\n${command.help.description}\nUsage: ${command.help.usage}`, {code:'asciidoc'});
+            message.channel.send(`= ${command.help.name} =\n\n${command.help.description}\nUsage: ${command.help.usage(message)}`, {code:'asciidoc'});
         } else {
             return message.react(`❔`);
         }

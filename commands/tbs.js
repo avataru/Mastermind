@@ -30,11 +30,13 @@ exports.help = {
     name: 'tbs',
     category: 'White Star',
     description: 'Manage player battleship information.',
-    usage: 'tbs [weapon] [shield] [module] [module] [module] [module]\n\n' + 
-        lib.weaponHelp + '\n' +
-        lib.shieldHelp + '\n' +
-        lib.moduleHelp + '\n\n' + 
-        'Example: !tbs dual6 omega1 destiny2 warp5 sanc'
+    usage: () => { 
+        return 'tbs [weapon] [shield] [module] [module] [module] [module]\n\n' + 
+               lib.weaponHelp + '\n' +
+               lib.shieldHelp + '\n' +
+               lib.moduleHelp + '\n\n' + 
+               'Example: !tbs dual6 omega1 destiny2 warp5 sanc';
+    }
 };
 
 exports.run = (client, message, args) => {

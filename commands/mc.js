@@ -10,7 +10,7 @@ exports.help = {
     name: 'mc',    
     category: 'Administration',
     description: 'Adds or removes the ability to use a command in a channel.',
-    usage: 'mc [+-][command name]'
+    usage: () => { return 'mc [+-][command name]'; }
 };
 
 exports.run = (client, message, args) => {
