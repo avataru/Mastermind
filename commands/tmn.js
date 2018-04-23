@@ -5,6 +5,7 @@ const self = module.exports;
 
 let addHeadingRow = function(table, heading) {
     table.cell('Player', heading);
+    table.cell('In WS?', '');
     table.cell('Module', '');
     table.cell('Mining', '');         
     table.newRow();
@@ -12,6 +13,7 @@ let addHeadingRow = function(table, heading) {
 
 let addPlayerRow = function(table, row) {
     table.cell('Player', row.username);
+    table.cell('In WS?', row.inWs === 'y' ? '[Y]' : '[N]');
     table.cell('Module', row.module);
     table.cell('Mining', 
         (row.mining1 === '' ? '' : row.mining1) + 
@@ -41,7 +43,7 @@ exports.run = (client, message, args) => {
     
     // display
     if (args === null || args.length === 0) {
-        client.db.query(`SELECT userId, username, module, mining1, mining2, mining3, mining4, mining5 FROM mn_tech ORDER BY username ASC`, [], (error, rows) => {
+        client.db.query(`SELECT userId, username, inWs, module, mining1, mining2, mining3, mining4, mining5 FROM mn_tech ORDER BY username ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the miner tech`, error.message);
             }

@@ -5,6 +5,7 @@ const self = module.exports;
 
 let addHeadingRow = function(table, heading) {
     table.cell('Player', heading);
+    table.cell('In WS?', '');
     table.cell('Hold', '');
     table.cell('Module', '');
     table.cell('Trade', '');
@@ -13,6 +14,7 @@ let addHeadingRow = function(table, heading) {
 
 let addPlayerRow = function(table, row) {
     table.cell('Player', row.username);
+    table.cell('In WS?', row.inWs === 'y' ? '[Y]' : '[N]');
     table.cell('Hold', row.hold);
     table.cell('Module', row.module);
     table.cell('Trade', 
@@ -43,7 +45,7 @@ exports.run = (client, message, args) => {
     
     // display
     if (args === null || args.length === 0) {
-        client.db.query(`SELECT userId, username, hold, module, trade1, trade2, trade3, trade4, trade5 FROM tr_tech ORDER BY username ASC`, [], (error, rows) => {
+        client.db.query(`SELECT userId, username, inWs, hold, module, trade1, trade2, trade3, trade4, trade5 FROM tr_tech ORDER BY username ASC`, [], (error, rows) => {
             if (error) {
                 return console.log(`Unable to retrieve the transport tech`, error.message);
             }

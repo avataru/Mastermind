@@ -36,6 +36,10 @@ exports.help = {
         '!ws\n\n' +        
         'To confirm your place in the next White Star:\n' +
         '!ws confirm [y/n]\n\n' + 
+        'To specify if you are using your transport:\n' +
+        '!ws ttr [y/n]\n\n' + 
+        'To specify if you are using your miner:\n' +
+        '!ws tmn [y/n]\n\n' + 
         'To set your BS job in the next White Star:\n' +
         '!ws job [job] [@player]';
         
@@ -141,6 +145,58 @@ exports.run = (client, message, args) => {
                 }                
                                
                 lib.setPlayerJob(client.db, userId, job);
+
+                message.react(`👌`)
+
+                break;
+            }
+            case "ttr" : {
+                let confirmed = args[1] || '';
+                confirmed = confirmed.toLowerCase();
+
+                let userId = message.author.id;
+               
+                if (confirmed === '' || (confirmed !== lib.CONFIRM_YES && confirmed !== lib.CONFIRM_NO)) {
+                    return message.channel.send(`Invalid status, please use '${lib.CONFIRM_YES}' or '${lib.CONFIRM_NO}'.`)
+                }
+
+                client.db.query(`UPDATE tr_tech SET inWs = '${confirmed}' WHERE userId = '${userId}'`, [], function(error) {
+                    if (error) {
+                        return console.log(`Unable to save transport tech for user (${userId})`, error.message);
+                    }
+                });
+
+                client.db.query(`UPDATE mn_tech SET inWs = '${confirmed === lib.CONFIRM_NO ? lib.CONFIRM_YES : lib.CONFIRM_NO}' WHERE userId = '${userId}'`, [], function(error) {
+                    if (error) {
+                        return console.log(`Unable to save miner tech for user (${userId})`, error.message);
+                    }
+                });
+
+                message.react(`👌`)
+
+                break;
+            }
+            case "tmn" : {
+                let confirmed = args[1] || '';
+                confirmed = confirmed.toLowerCase();
+
+                let userId = message.author.id;
+               
+                if (confirmed === '' || (confirmed !== lib.CONFIRM_YES && confirmed !== lib.CONFIRM_NO)) {
+                    return message.channel.send(`Invalid status, please use '${lib.CONFIRM_YES}' or '${lib.CONFIRM_NO}'.`)
+                }
+
+                client.db.query(`UPDATE mn_tech SET inWs = '${confirmed}' WHERE userId = '${userId}'`, [], function(error) {
+                    if (error) {
+                        return console.log(`Unable to save miner tech for user (${userId})`, error.message);
+                    }
+                }); 
+
+                client.db.query(`UPDATE tr_tech SET inWs = '${confirmed === lib.CONFIRM_NO ? lib.CONFIRM_YES : lib.CONFIRM_NO}' WHERE userId = '${userId}'`, [], function(error) {
+                    if (error) {
+                        return console.log(`Unable to save transport tech for user (${userId})`, error.message);
+                    }
+                });
 
                 message.react(`👌`)
 
