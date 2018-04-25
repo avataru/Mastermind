@@ -9,7 +9,7 @@ const fs = require('fs');
 const mcLib = require('./lib/mc_library');
 
 // get the client
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 
 // create the connection to database
 const db = mysql.createConnection(

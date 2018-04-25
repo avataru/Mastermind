@@ -83,32 +83,33 @@ exports.run = (client, message, args) => {
 
                 lib.clearDraw(client.db);
 
-                const weightedEntries = lib.applyWeights(client.db, players.array());
-                const drawnPlayers = weightedEntries.slice(0, +sizeArg);
-                const undrawnPlayers = weightedEntries.slice(+sizeArg);
-
-                const playersPerTeam = Math.ceil(drawnPlayers.length / +teamsArg);
-
-                const teams = _.chunk(drawnPlayers, playersPerTeam);
-
-                // add the randomly drawn players by team
-                for (let i = 0; i < teams.length; i++) {
-                    const team = teams[i];
-                    for (let j = 0; j < team.length; j++) {
-                        const player = team[j];
-
-                        lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
+                lib.applyWeights(client.db, players.array(), function(weightedEntries) {
+                    const drawnPlayers = weightedEntries.slice(0, +sizeArg);
+                    const undrawnPlayers = weightedEntries.slice(+sizeArg);
+    
+                    const playersPerTeam = Math.ceil(drawnPlayers.length / +teamsArg);
+    
+                    const teams = _.chunk(drawnPlayers, playersPerTeam);
+    
+                    // add the randomly drawn players by team
+                    for (let i = 0; i < teams.length; i++) {
+                        const team = teams[i];
+                        for (let j = 0; j < team.length; j++) {
+                            const player = team[j];
+    
+                            lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
+                        }
                     }
-                }
-
-                // add the undrawn players
-                for (let j = 0; j < undrawnPlayers.length; j++) {
-                    const player = undrawnPlayers[j];
-
-                    lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
-                }
-
-                lib.displayCurrentDraw(client.db, message);
+    
+                    // add the undrawn players
+                    for (let j = 0; j < undrawnPlayers.length; j++) {
+                        const player = undrawnPlayers[j];
+    
+                        lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
+                    }
+    
+                    lib.displayCurrentDraw(client.db, message);
+                });                
 
                 break;
             }
