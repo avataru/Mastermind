@@ -89,3 +89,11 @@ CREATE TABLE IF NOT EXISTS `tr_tech` (
   PRIMARY KEY (`userId`),
   UNIQUE KEY `unique_userId` (`userId`)
 );
+
+CREATE TABLE IF NOT EXISTS `white_star_weights` (
+  `userId` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `weight` int NOT NULL DEFAULT "1",
+  PRIMARY KEY (`userId`),
+  UNIQUE INDEX `unique_userId` (`userId`)
+);
