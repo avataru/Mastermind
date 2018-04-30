@@ -128,6 +128,65 @@ exports.run = (client, message, args) => {
 
                 break;
             }
+            case "weights": {
+                // permission validation
+                if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+                    return message.react(`🚫`);
+                }
+
+                lib.getWeights(client.db, (rows) => {
+                    
+                    let table = new Table;
+
+                    rows.forEach(row => {
+                        table.cell('Player', row.username);
+                        table.cell('Weight', row.weight);
+                        table.newRow();
+                    });
+
+                    return message.channel.send(table.toString(), {code:'asciidoc'});                    
+                });
+
+                break;
+            }
+            case "setweight": {
+                // permission validation
+                if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+                    return message.react(`🚫`);
+                }
+                
+                // player validation
+                let playerArg = args[1] || ''
+
+                if (!lib.validatePlayerArg(client, message, playerArg))
+                    return;
+
+                var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
+                let member = message.guild.members.find((x) => {
+                    return x.id === targetID;
+                });
+
+                if (!member) {
+                    return message.channel.send('Who?! Never heard of them.');
+                }               
+
+                const userId = member.id;
+                const username = member.nickname || member.user.username;
+
+                // weight validation
+                const weight = args[2] || ''
+
+                if (isNaN(weight) || +weight < 0) {
+                    message.channel.send(`Invalid weight number **${weight}**\nPlease use 0 or higher.`);
+                    return;
+                }
+
+                lib.setWeight(client.db, userId, username, weight);
+
+                message.react(`👌`);
+
+                break;
+            }
             case "job": {
                 // argument validation
                 let job = args[1] || '';
