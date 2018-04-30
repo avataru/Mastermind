@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `mn_tech` (
   `mining3` varchar(255) DEFAULT NULL,
   `mining4` varchar(255) DEFAULT NULL,
   `mining5` varchar(255) DEFAULT NULL,
+  `inWs` varchar(255) NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `unique_userId` (`userId`)
 );
@@ -86,6 +87,15 @@ CREATE TABLE IF NOT EXISTS `tr_tech` (
   `trade3` varchar(255) DEFAULT NULL,
   `trade4` varchar(255) DEFAULT NULL,
   `trade5` varchar(255) DEFAULT NULL,
+  `inWs` varchar(255) NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `unique_userId` (`userId`)
+);
+
+CREATE TABLE IF NOT EXISTS `white_star_weights` (
+  `userId` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `weight` int NOT NULL DEFAULT "1",
+  PRIMARY KEY (`userId`),
+  UNIQUE INDEX `unique_userId` (`userId`)
 );

@@ -4,7 +4,7 @@ const lib = require('../lib/ws_library');
 
 const self = module.exports;
 
-exports.config = {    
+exports.config = {
 };
 
 exports.help = {
@@ -16,10 +16,10 @@ exports.help = {
         let text = '\n';
 
         if (message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
-            text +=  
+            text +=
             '= Officers =\n\n' +
             'To make a new random draw:\n' +
-            '!ws draw [white star size] [number of teams]\n\n' +             
+            '!ws draw [white star size] [number of teams]\n\n' +
             'To replace a player with a random undrawn player:\n' +
             '!ws redraw [@player]\n\n' +
             'To replace a player with another undrawn player:\n' +
@@ -27,24 +27,24 @@ exports.help = {
             'To swap two players\' teams:\n' +
             '!ws swap [@player] with [@player]\n\n' +
             'To finalize the current draw, and set all roles:\n' +
-            '!ws finalize\n\n' +             
+            '!ws finalize\n\n' +
             '= Everyone =\n\n';
-        } 
-        
-        text += 
+        }
+
+        text +=
         'To display the current draw:\n' +
-        '!ws\n\n' +        
+        '!ws\n\n' +
         'To confirm your place in the next White Star:\n' +
-        '!ws confirm [y/n]\n\n' + 
+        '!ws confirm [y/n]\n\n' +
         'To specify if you are using your transport:\n' +
-        '!ws ttr [y/n]\n\n' + 
+        '!ws ttr [y/n]\n\n' +
         'To specify if you are using your miner:\n' +
-        '!ws tmn [y/n]\n\n' + 
+        '!ws tmn [y/n]\n\n' +
         'To set your BS job in the next White Star:\n' +
         '!ws job [job] [@player]';
-        
+
         return text;
-    } 
+    }
 };
 
 exports.run = (client, message, args) => {
@@ -57,9 +57,9 @@ exports.run = (client, message, args) => {
             case "draw": {
                 // permission validation
                 if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
-                    return message.react(`🚫`); 
+                    return message.react(`🚫`);
                 }
-                
+
                 // white star size validation
                 let sizeArg = args[1] || '';
 
@@ -83,32 +83,33 @@ exports.run = (client, message, args) => {
 
                 lib.clearDraw(client.db);
 
-                const randomizedPlayers = lib.shuffle(players.array())
-                const drawnPlayers = randomizedPlayers.slice(0, +sizeArg)
-                const undrawnPlayers = randomizedPlayers.slice(+sizeArg)
-
-                const playersPerTeam = Math.ceil(drawnPlayers.length / +teamsArg);
-                
-                const teams = _.chunk(drawnPlayers, playersPerTeam);
-
-                // add the randomly drawn players by team
-                for (let i = 0; i < teams.length; i++) {
-                    const team = teams[i];
-                    for (let j = 0; j < team.length; j++) {
-                        const player = team[j];
-                        
-                        lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
+                lib.applyWeights(client.db, players.array(), function(weightedEntries) {
+                    const drawnPlayers = weightedEntries.slice(0, +sizeArg);
+                    const undrawnPlayers = weightedEntries.slice(+sizeArg);
+    
+                    const playersPerTeam = Math.ceil(drawnPlayers.length / +teamsArg);
+    
+                    const teams = _.chunk(drawnPlayers, playersPerTeam);
+    
+                    // add the randomly drawn players by team
+                    for (let i = 0; i < teams.length; i++) {
+                        const team = teams[i];
+                        for (let j = 0; j < team.length; j++) {
+                            const player = team[j];
+    
+                            lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.TEAMS[i], lib.CONFIRM_NO)
+                        }
                     }
-                }
-
-                // add the undrawn players
-                for (let j = 0; j < undrawnPlayers.length; j++) {
-                    const player = undrawnPlayers[j];
-                    
-                    lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
-                }
-            
-                lib.displayCurrentDraw(client.db, message);
+    
+                    // add the undrawn players
+                    for (let j = 0; j < undrawnPlayers.length; j++) {
+                        const player = undrawnPlayers[j];
+    
+                        lib.addDrawnPlayer(client.db, player.user.id, player.nickname || player.user.username, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO)
+                    }
+    
+                    lib.displayCurrentDraw(client.db, message);
+                });                
 
                 break;
             }
@@ -116,7 +117,7 @@ exports.run = (client, message, args) => {
                 // argument validation
                 let confirmed = args[1] || '';
                 confirmed = confirmed.toLowerCase();
-               
+
                 if (confirmed === '' || (confirmed !== lib.CONFIRM_YES && confirmed !== lib.CONFIRM_NO)) {
                     return message.channel.send(`Invalid confirmation, please use '${lib.CONFIRM_YES}' or '${lib.CONFIRM_NO}'.`)
                 }
@@ -124,6 +125,65 @@ exports.run = (client, message, args) => {
                 lib.confirmPlayerDraw(client.db, message.author.id, confirmed);
 
                 message.react(`👌`)
+
+                break;
+            }
+            case "weights": {
+                // permission validation
+                if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+                    return message.react(`🚫`);
+                }
+
+                lib.getWeights(client.db, (rows) => {
+                    
+                    let table = new Table;
+
+                    rows.forEach(row => {
+                        table.cell('Player', row.username);
+                        table.cell('Weight', row.weight);
+                        table.newRow();
+                    });
+
+                    return message.channel.send(table.toString(), {code:'asciidoc'});                    
+                });
+
+                break;
+            }
+            case "setweight": {
+                // permission validation
+                if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
+                    return message.react(`🚫`);
+                }
+                
+                // player validation
+                let playerArg = args[1] || ''
+
+                if (!lib.validatePlayerArg(client, message, playerArg))
+                    return;
+
+                var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
+                let member = message.guild.members.find((x) => {
+                    return x.id === targetID;
+                });
+
+                if (!member) {
+                    return message.channel.send('Who?! Never heard of them.');
+                }               
+
+                const userId = member.id;
+                const username = member.nickname || member.user.username;
+
+                // weight validation
+                const weight = args[2] || ''
+
+                if (isNaN(weight) || +weight < 0) {
+                    message.channel.send(`Invalid weight number **${weight}**\nPlease use 0 or higher.`);
+                    return;
+                }
+
+                lib.setWeight(client.db, userId, username, weight);
+
+                message.react(`👌`);
 
                 break;
             }
@@ -135,15 +195,15 @@ exports.run = (client, message, args) => {
                 let userId = message.author.id;
 
                 let target = message.mentions.members.first();
-                
+
                 if (!_.isEmpty(target)) {
                     if (message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
                         userId = target.user.id;
                     } else {
-                        return message.react(`🚫`); 
+                        return message.react(`🚫`);
                     }
-                }                
-                               
+                }
+
                 lib.setPlayerJob(client.db, userId, job);
 
                 message.react(`👌`)
@@ -155,7 +215,7 @@ exports.run = (client, message, args) => {
                 confirmed = confirmed.toLowerCase();
 
                 let userId = message.author.id;
-               
+
                 if (confirmed === '' || (confirmed !== lib.CONFIRM_YES && confirmed !== lib.CONFIRM_NO)) {
                     return message.channel.send(`Invalid status, please use '${lib.CONFIRM_YES}' or '${lib.CONFIRM_NO}'.`)
                 }
@@ -181,7 +241,7 @@ exports.run = (client, message, args) => {
                 confirmed = confirmed.toLowerCase();
 
                 let userId = message.author.id;
-               
+
                 if (confirmed === '' || (confirmed !== lib.CONFIRM_YES && confirmed !== lib.CONFIRM_NO)) {
                     return message.channel.send(`Invalid status, please use '${lib.CONFIRM_YES}' or '${lib.CONFIRM_NO}'.`)
                 }
@@ -190,7 +250,7 @@ exports.run = (client, message, args) => {
                     if (error) {
                         return console.log(`Unable to save miner tech for user (${userId})`, error.message);
                     }
-                }); 
+                });
 
                 client.db.query(`UPDATE tr_tech SET inWs = '${confirmed === lib.CONFIRM_NO ? lib.CONFIRM_YES : lib.CONFIRM_NO}' WHERE userId = '${userId}'`, [], function(error) {
                     if (error) {
@@ -205,24 +265,24 @@ exports.run = (client, message, args) => {
             case "redraw": {
                 // permission validation
                 if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
-                    return message.react(`🚫`); 
+                    return message.react(`🚫`);
                 }
 
                 // player validation
                 let playerArg = args[1] || ''
-                
+
                 if (!lib.validatePlayerArg(client, message, playerArg))
                     return;
 
                 var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
                 var targetDB = client.users.get(targetID)
-            
+
                 if (!targetDB) {
                     return message.channel.send('Who?! Never heard of them.');
-                }                
+                }
 
                 lib.getDrawnPlayers(client.db, function(rows) {
-                    
+
                     let drawnPlayerRow = _.find(rows, (row) => {
                         return row.userId == targetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
                     });
@@ -239,12 +299,12 @@ exports.run = (client, message, args) => {
                         return message.channel.send(`We don't seam to have an undrawn players to chose from.`);
                     }
 
-                    let newlyDrawnPlayerRow = _.take(lib.shuffle(undrawnPlayerRows), 1)[0];
+                    let newlyDrawnPlayerRow = _.take(_.shuffle(undrawnPlayerRows), 1)[0];
 
                     // set the previously drawn player to undrawn
                     lib.updateDrawnPlayer(client.db, drawnPlayerRow.userId, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO);
                     // set the previously undrawn player to drawn in the appropriate team
-                    lib.updateDrawnPlayer(client.db, newlyDrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);                   
+                    lib.updateDrawnPlayer(client.db, newlyDrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);
 
                     message.react(`👌`)
                 });
@@ -254,21 +314,21 @@ exports.run = (client, message, args) => {
             case "replace": {
                 // permission validation
                 if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
-                    return message.react(`🚫`); 
+                    return message.react(`🚫`);
                 }
 
                 // player validation
                 let playerArg = args[1] || ''
-                
+
                 if (!lib.validatePlayerArg(client, message, playerArg))
                     return;
 
                 var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
                 var targetDB = client.users.get(targetID)
-            
+
                 if (!targetDB) {
                     return message.channel.send('Who?! Never heard of them.');
-                }                
+                }
 
                 // new player validation
                 let newPlayerArg = args[3] || ''
@@ -278,13 +338,13 @@ exports.run = (client, message, args) => {
 
                 var newTargetID = newPlayerArg.replace("<@","").replace(">","").replace("!", "");
                 var newTargetDB = client.users.get(newTargetID)
-            
+
                 if (!newTargetDB) {
                     return message.channel.send(`Who?! I don't know who to replace them with.`);
-                }                
-                
+                }
+
                 lib.getDrawnPlayers(client.db, function(rows) {
-                    
+
                     let drawnPlayerRow = _.find(rows, (row) => {
                         return row.userId == targetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
                     });
@@ -304,7 +364,7 @@ exports.run = (client, message, args) => {
                     // set the previously drawn player to undrawn
                     lib.updateDrawnPlayer(client.db, drawnPlayerRow.userId, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO);
                     // set the previously undrawn player to drawn in the appropriate team
-                    lib.updateDrawnPlayer(client.db, undrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);                   
+                    lib.updateDrawnPlayer(client.db, undrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);
 
                     message.react(`👌`)
                 });
@@ -314,21 +374,21 @@ exports.run = (client, message, args) => {
             case "swap": {
                 // permission validation
                 if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
-                    return message.react(`🚫`); 
+                    return message.react(`🚫`);
                 }
 
                 // player validation
                 let playerArg = args[1] || ''
-                
+
                 if (!lib.validatePlayerArg(client, message, playerArg))
                     return;
 
                 var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
                 var targetDB = client.users.get(targetID)
-            
+
                 if (!targetDB) {
                     return message.channel.send('Who?! Never heard of them.');
-                }                
+                }
 
                 // new player validation
                 let newPlayerArg = args[3] || ''
@@ -338,13 +398,13 @@ exports.run = (client, message, args) => {
 
                 var newTargetID = newPlayerArg.replace("<@","").replace(">","").replace("!", "");
                 var newTargetDB = client.users.get(newTargetID)
-            
+
                 if (!newTargetDB) {
                     return message.channel.send(`Who?! I don't know who to swap them with.`);
-                }                
-                
+                }
+
                 lib.getDrawnPlayers(client.db, function(rows) {
-                    
+
                     let drawnPlayer1Row = _.find(rows, (row) => {
                         return row.userId == targetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
                     });
@@ -363,7 +423,7 @@ exports.run = (client, message, args) => {
 
                     // swap the drawn players' teams
                     lib.updateDrawnPlayer(client.db, drawnPlayer1Row.userId, drawnPlayer2Row.team, drawnPlayer1Row.confirmed);
-                    lib.updateDrawnPlayer(client.db, drawnPlayer2Row.userId, drawnPlayer1Row.team, drawnPlayer2Row.confirmed);                   
+                    lib.updateDrawnPlayer(client.db, drawnPlayer2Row.userId, drawnPlayer1Row.team, drawnPlayer2Row.confirmed);
 
                     message.react(`👌`)
                 });
@@ -373,7 +433,7 @@ exports.run = (client, message, args) => {
             case "finalize" : {
                 // permission validation
                 if (!message.member.roles.some(role => lib.ELEVATED_ROLES.includes(role.name))) {
-                    return message.react(`🚫`); 
+                    return message.react(`🚫`);
                 }
 
                 lib.getDrawnPlayers(client.db, function(rows) {
@@ -382,7 +442,7 @@ exports.run = (client, message, args) => {
                         return message.channel.send(`Um... looks like no one is drawn yet boss.`);
                     }
 
-                    const drawnPlayerRows = _.filter(rows, (row) => { 
+                    const drawnPlayerRows = _.filter(rows, (row) => {
                         return row.team !== lib.UNDRAWN_TEAM_NAME;
                     });
 
@@ -393,22 +453,22 @@ exports.run = (client, message, args) => {
                     if (!allConfirmed) {
                         return message.channel.send(`Um... looks like not all players have confirmed yet.`);
                     }
-                    
+
                     const wsPlayers = message.guild.roles
                         .find(role => role.name === lib.WS_PLAYER_ROLE)
                         .members;
 
                     const teams = _.groupBy(rows, 'team');
 
-                    _.keys(teams).forEach(team => { 
-                        
+                    _.keys(teams).forEach(team => {
+
                         teams[team].forEach(drawnPlayer => {
                             const target = wsPlayers.find(wsPlayer => wsPlayer.id === drawnPlayer.userId);
 
                             if (target) {
                                 let existingRoleNames = target.roles.map(role => role.name);
                                 let preservedRoleNames = _.difference(existingRoleNames, _.concat(lib.TEAMS, lib.ALERTS));
-                                let newRoleNames = team === lib.UNDRAWN_TEAM_NAME 
+                                let newRoleNames = team === lib.UNDRAWN_TEAM_NAME
                                     ? preservedRoleNames
                                     : _.concat(preservedRoleNames, [ team ], lib.ALERTS)
 
@@ -416,9 +476,9 @@ exports.run = (client, message, args) => {
 
                                 target.setRoles(newRoles);
                             }
-                        });                                     
+                        });
                     });
-                    
+
                     return message.channel.send('The draw has been finalized, all team roles are set. Good luck everyone!!!')
                 });
 

@@ -13,7 +13,7 @@ const mysql = require('mysql2');
 
 // create the connection to database
 const db = mysql.createConnection(
-    config.devMode ? 
+    config.devMode ?
     {
         user: config.db_username,
         password: config.db_password,
@@ -31,7 +31,7 @@ const db = mysql.createConnection(
 client.on('ready', () => {
 
     console.log(`${config.name} has awakened and is logged in as ${client.user.username}.`);
-    client.user.setActivity(`Hades' Star`);
+    client.user.setActivity(`${config.activity}`);
 });
 
 client.config = config;
@@ -43,7 +43,7 @@ fs.readdir('./commands/', (error, files) => {
     if (error) {
         console.error(error);
     }
-    
+
     console.log(`Loading a total of ${files.length} commands.`);
 
     files.forEach(file => {
@@ -90,7 +90,7 @@ client.on('message', async message => {
             } else {
                 client.commands[command].run(client, message, args);
             }
-        });        
+        });
     } else {
         return message.react(`❔`);
     }
