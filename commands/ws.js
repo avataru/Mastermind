@@ -26,6 +26,10 @@ exports.help = {
             '!ws replace [@player] with [@player]\n\n' +
             'To swap two players\' teams:\n' +
             '!ws swap [@player] with [@player]\n\n' +
+            'To set the draw weighting for a player:\n' +
+            '!ws setweight [player] [number]\n\n' +
+            'To view the draw weighting:\n' +
+            '!ws weights\n\n' +
             'To finalize the current draw, and set all roles:\n' +
             '!ws finalize\n\n' +
             '= Everyone =\n\n';
