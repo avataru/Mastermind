@@ -35,7 +35,9 @@ exports.help = {
         return 'tmn [module] [mining] [mining] [mining] [mining] [mining]\n\n' + 
                lib.moduleHelp + '\n' +
                lib.miningHelp + '\n\n' + 
-               'Example: !tmn warp3 remote4 crunch1';
+               'Example: !tmn warp3 remote4 crunch1\n\n' + 
+               'You can also specifiy if this ship is in the White Star by using:\n' +
+               '!ws tmn y';
     }
 };
 

@@ -37,7 +37,9 @@ exports.help = {
         return 'ttr [hold] [module] [trade] [trade] [trade] [trade] [trade]\n\n' + 
                lib.moduleHelp + '\n' +
                lib.tradeHelp + '\n\n' + 
-               'Example: !ttr 10 warp3 cargobay3 computer1 boost2';
+               'Example: !ttr 10 warp3 cargobay3 computer1 boost2\n\n' + 
+               'You can also specifiy if this ship is in the White Star by using:\n' +
+               '!ws ttr y';
     }
 };
 
