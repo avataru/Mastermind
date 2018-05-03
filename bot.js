@@ -72,6 +72,10 @@ client.on('message', async message => {
         return;
     }
 
+    if (message.channel.type === 'dm') {
+        return message.reply(`Sorry, I'm too shy for direct messages.`);
+    }
+
     const args = message.content.split(/ +/g);
     const command = args.shift().slice(config.prefix.length).toLowerCase();
 

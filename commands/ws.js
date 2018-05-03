@@ -296,11 +296,20 @@ exports.run = (client, message, args) => {
                     }
 
                     let undrawnPlayerRows = _.filter(rows, (row) => {
-                        return row.team === lib.UNDRAWN_TEAM_NAME;
+                        // first give preference to undrawn players that confirmed their interest
+                        return row.team === lib.UNDRAWN_TEAM_NAME && row.confirmed === lib.CONFIRM_YES;
                     });
 
                     if (undrawnPlayerRows.length === 0) {
-                        return message.channel.send(`We don't seam to have an undrawn players to chose from.`);
+                        
+                        undrawnPlayerRows = _.filter(rows, (row) => {
+                            // then open it up to any undrawn player
+                            return row.team === lib.UNDRAWN_TEAM_NAME;
+                        });                        
+                        
+                        if (undrawnPlayerRows.length === 0) {
+                            return message.channel.send(`We don't seam to have any undrawn players to chose from.`);
+                        }
                     }
 
                     let newlyDrawnPlayerRow = _.take(_.shuffle(undrawnPlayerRows), 1)[0];
@@ -308,7 +317,7 @@ exports.run = (client, message, args) => {
                     // set the previously drawn player to undrawn
                     lib.updateDrawnPlayer(client.db, drawnPlayerRow.userId, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO);
                     // set the previously undrawn player to drawn in the appropriate team
-                    lib.updateDrawnPlayer(client.db, newlyDrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);
+                    lib.updateDrawnPlayer(client.db, newlyDrawnPlayerRow.userId, drawnPlayerRow.team, newlyDrawnPlayerRow.confirmed);
 
                     message.react(`👌`)
                 });
