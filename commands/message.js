@@ -14,13 +14,13 @@ exports.help = {
 
 exports.run = (client, message, args) => {
     
-    if (args && args.length == 2) {       
+    if (args && args.length > 1) {       
 
-        if (!_.isEmpty(args[1]) && args[1].indexOf("<@") < 0) {
+        if (!_.isEmpty(args[1]) && args[1].indexOf("@") < 0) {
             return message.channel.send('You need to specify a player or role.');
         }  
 
-        let id = args[1].replace("<@","").replace(">","").replace("!", "").replace("&", "");
+        let id = args[1].replace("<","").replace("@","").replace(">","").replace("!", "").replace("&", "");
 
         let group = null;
         let member = message.guild.members.find((x) => {
@@ -33,7 +33,7 @@ exports.run = (client, message, args) => {
             });
         }
 
-        if (!member && !group) {
+        if (!member && !group && args[1] !== '@everyone') {
             return message.channel.send('You need to specify a player or role.');
         }
 
