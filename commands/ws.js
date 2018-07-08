@@ -162,7 +162,7 @@ exports.run = (client, message, args) => {
                 // player validation
                 let playerArg = args[1] || ''
 
-                if (!lib.validatePlayerArg(client, message, playerArg))
+                if (!lib.validatePlayerArg(client, message, playerArg, true))
                     return;
 
                 var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
@@ -275,20 +275,29 @@ exports.run = (client, message, args) => {
                 // player validation
                 let playerArg = args[1] || ''
 
-                if (!lib.validatePlayerArg(client, message, playerArg))
+                if (!lib.validatePlayerArg(client, message, playerArg, false))
                     return;
 
-                var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
-                var targetDB = client.users.get(targetID)
-
-                if (!targetDB) {
-                    return message.channel.send('Who?! Never heard of them.');
-                }
-
+                var targetIdOrName = playerArg.replace("<@","").replace(">","").replace("!", "");
+                
                 lib.getDrawnPlayers(client.db, function(rows) {
 
+                    var targetDB = client.users.get(targetIdOrName)
+                    if (!targetDB) {
+                        let targetUser = _.find(rows, (row) => {
+                            return row.username == targetIdOrName;
+                        });
+
+                        if(!targetUser)
+                            return message.channel.send('Who?! Never heard of them.');
+                        else 
+                        targetIdOrName = targetUser.userId
+                    } else {
+                        targetIdOrName = targetDB.id
+                    }
+                    
                     let drawnPlayerRow = _.find(rows, (row) => {
-                        return row.userId == targetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
+                        return row.userId == targetIdOrName && row.team !== lib.UNDRAWN_TEAM_NAME;
                     });
 
                     if (!drawnPlayerRow) {
@@ -333,20 +342,15 @@ exports.run = (client, message, args) => {
                 // player validation
                 let playerArg = args[1] || ''
 
-                if (!lib.validatePlayerArg(client, message, playerArg))
+                if (!lib.validatePlayerArg(client, message, playerArg, false))
                     return;
 
-                var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
-                var targetDB = client.users.get(targetID)
-
-                if (!targetDB) {
-                    return message.channel.send('Who?! Never heard of them.');
-                }
-
+                var targetIdOrName = playerArg.replace("<@","").replace(">","").replace("!", "");
+                
                 // new player validation
                 let newPlayerArg = args[3] || ''
 
-                if (!lib.validatePlayerArg(client, message, newPlayerArg))
+                if (!lib.validatePlayerArg(client, message, newPlayerArg, true))
                     return;
 
                 var newTargetID = newPlayerArg.replace("<@","").replace(">","").replace("!", "");
@@ -358,8 +362,22 @@ exports.run = (client, message, args) => {
 
                 lib.getDrawnPlayers(client.db, function(rows) {
 
+                    var targetDB = client.users.get(targetIdOrName);
+                    if (!targetDB) {
+                        let targetUser = _.find(rows, (row) => {
+                            return row.username == targetIdOrName;
+                        });
+
+                        if(!targetUser)
+                            return message.channel.send('Who?! Never heard of them.');
+                        else 
+                        targetIdOrName = targetUser.userId
+                    } else {
+                        targetIdOrName = targetDB.id
+                    }
+
                     let drawnPlayerRow = _.find(rows, (row) => {
-                        return row.userId == targetDB.id && row.team !== lib.UNDRAWN_TEAM_NAME;
+                        return row.userId == targetIdOrName && row.team !== lib.UNDRAWN_TEAM_NAME;
                     });
 
                     if (!drawnPlayerRow) {
@@ -370,14 +388,14 @@ exports.run = (client, message, args) => {
                         return row.userId == newTargetDB.id && row.team === lib.UNDRAWN_TEAM_NAME;
                     });
 
-                    if (!undrawnPlayerRow) {
-                        return message.channel.send(`Um... the new player is not eligble to be drawn.`);
-                    }
-
-                    // set the previously drawn player to undrawn
-                    lib.updateDrawnPlayer(client.db, drawnPlayerRow.userId, lib.UNDRAWN_TEAM_NAME, lib.CONFIRM_NO);
-                    // set the previously undrawn player to drawn in the appropriate team
-                    lib.updateDrawnPlayer(client.db, undrawnPlayerRow.userId, drawnPlayerRow.team, lib.CONFIRM_NO);
+                    undrawnPlayerRow = undrawnPlayerRow || {};
+                    undrawnPlayerRow.team = undrawnPlayerRow.team || lib.UNDRAWN_TEAM_NAME;
+                    undrawnPlayerRow.confirmed = undrawnPlayerRow.confirmed || lib.CONFIRM_NO
+                    
+                    // set the first player to the second player's team or undrawn
+                    lib.updateDrawnPlayer(client.db, targetIdOrName, undrawnPlayerRow.team, drawnPlayerRow.confirmed);
+                    // set the second player to the first player's team or undrawn
+                    lib.updateDrawnPlayer(client.db, newTargetDB.id, drawnPlayerRow.team, undrawnPlayerRow.confirmed);
 
                     message.react(`👌`)
                 });
@@ -393,7 +411,7 @@ exports.run = (client, message, args) => {
                 // player validation
                 let playerArg = args[1] || ''
 
-                if (!lib.validatePlayerArg(client, message, playerArg))
+                if (!lib.validatePlayerArg(client, message, playerArg, true))
                     return;
 
                 var targetID = playerArg.replace("<@","").replace(">","").replace("!", "");
@@ -406,7 +424,7 @@ exports.run = (client, message, args) => {
                 // new player validation
                 let newPlayerArg = args[3] || ''
 
-                if (!lib.validatePlayerArg(client, message, newPlayerArg))
+                if (!lib.validatePlayerArg(client, message, newPlayerArg, true))
                     return;
 
                 var newTargetID = newPlayerArg.replace("<@","").replace(">","").replace("!", "");
